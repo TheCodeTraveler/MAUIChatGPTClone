@@ -1,10 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using AiChatClient;
 using Amazon;
 using Amazon.BedrockRuntime;
 using Microsoft.Extensions.AI;
 
-IAmazonBedrockRuntime runtime = new AmazonBedrockRuntimeClient(RegionEndpoint.USEast1);
+IAmazonBedrockRuntime runtime = new AmazonBedrockRuntimeClient(AwsCredentials.AccessKeyId, AwsCredentials.SecretAccessKey, RegionEndpoint.USEast1);
 IChatClient client = runtime.AsChatClient();
 
 var chatMessage = new ChatMessage { Text = "Is this working?" };
