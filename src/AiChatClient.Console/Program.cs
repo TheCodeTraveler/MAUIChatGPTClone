@@ -1,14 +1,13 @@
-﻿using AiChatClient.Console;
+﻿using AiChatClient.Common;
+using AiChatClient.Console;
 using Amazon;
 using Amazon.BedrockRuntime;
-using Microsoft.Extensions.AI;
 
-IAmazonBedrockRuntime runtime = new AmazonBedrockRuntimeClient(AwsCredentials.AccessKeyId, AwsCredentials.SecretAccessKey, RegionEndpoint.USEast1);
-IChatClient client = runtime.AsChatClient();
+var bedrockService = new BedrockService(
+	new AmazonBedrockRuntimeClient(AwsCredentials.AccessKeyId, AwsCredentials.SecretAccessKey, RegionEndpoint.USEast1),
+	"anthropic.claude-v2");
 
-var chatMessage = new ChatMessage { Text = "Is this working?" };
-
-await foreach (var response in client.GetStreamingResponseAsync(chatMessage, new() { ModelId = "anthropic.claude-v2" }))
+await foreach (var response in bedrockService.GetStreamingResponseAsync("Is this working?", new(), CancellationToken.None))
 {
-	Console.WriteLine(response.Text);
+	Console.Write(response.Text);
 }
