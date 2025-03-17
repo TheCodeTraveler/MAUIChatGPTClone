@@ -23,12 +23,14 @@ public partial class ChatViewModel(BedrockService bedrockService) : BaseViewMode
 	[RelayCommand(IncludeCancelCommand = true, AllowConcurrentExecutions = false, CanExecute = nameof(CanSubmitInputTextExecute))]
 	public async Task SubmitInputText(CancellationToken token)
 	{
+		var inputText = InputText;
+
+		CanSubmitInputTextExecute = false;
+		OutputText = string.Empty;
+		
 		try
 		{
-			CanSubmitInputTextExecute = false;
-			OutputText = string.Empty;
-
-			await foreach (var response in _bedrockService.GetStreamingResponseAsync(InputText, new(), token).ConfigureAwait(false))
+			await foreach (var response in _bedrockService.GetStreamingResponseAsync(inputText, new(), token).ConfigureAwait(false))
 			{
 				if (response.Text is not null)
 				{
@@ -42,6 +44,7 @@ public partial class ChatViewModel(BedrockService bedrockService) : BaseViewMode
 		}
 		finally
 		{
+			InputText = string.Empty;
 			CanSubmitInputTextExecute = true;
 		}
 	}

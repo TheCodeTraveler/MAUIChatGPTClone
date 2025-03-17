@@ -15,7 +15,7 @@ public abstract class BasePage : ContentPage
 	protected BasePage(object? viewModel = null, bool shouldUseSafeArea = true)
 	{
 		BindingContext = viewModel;
-		Padding = 12;
+		Padding = 24;
 
 		On<iOS>().SetUseSafeArea(shouldUseSafeArea);
 
