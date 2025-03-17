@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using AiChatClient;
+﻿using AiChatClient.Console;
 using Amazon;
 using Amazon.BedrockRuntime;
 using Microsoft.Extensions.AI;
