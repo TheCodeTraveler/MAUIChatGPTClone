@@ -1,6 +1,6 @@
-﻿namespace AiChatClient;
+﻿namespace AiChatClient.Console;
 
-static class AwsCredentials
+public static class AwsCredentials
 {
 	public const string AccessKeyId = nameof(AccessKeyId);
 	public const string SecretAccessKey = nameof(SecretAccessKey);
