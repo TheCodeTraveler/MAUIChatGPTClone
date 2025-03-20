@@ -30,6 +30,7 @@ class ChatPage : BasePage<ChatViewModel>
 				}.Row(Row.OutputText),
 
 				new Entry { ReturnType = ReturnType.Go }
+					.Assign(out Entry inputEntry)
 					.Row(Row.InputText)
 					.Placeholder("Ask Anything")
 					.FillHorizontal().Bottom()
@@ -41,6 +42,10 @@ class ChatPage : BasePage<ChatViewModel>
 					}.Bind(UserStoppedTypingBehavior.CommandProperty,
 						getter: static (ChatViewModel vm) => vm.SubmitInputTextCommand,
 						mode: BindingMode.OneTime))
+					 .Bind(UserStoppedTypingBehavior.BindingContextProperty,
+						getter: static (Entry inputEntry) => inputEntry.BindingContext,
+						mode: BindingMode.OneWay,
+						source: inputEntry)
 					.Bind(Entry.TextProperty,
 						getter: static (ChatViewModel vm) => vm.InputText,
 						setter: static (ChatViewModel vm, string text) => vm.InputText = text)
