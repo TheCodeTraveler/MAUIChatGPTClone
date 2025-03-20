@@ -41,18 +41,17 @@ class ChatPage : BasePage<ChatViewModel>
 						StoppedTypingTimeThreshold = 2_000
 					}.Bind(UserStoppedTypingBehavior.CommandProperty,
 						getter: static (ChatViewModel vm) => vm.SubmitInputTextCommand,
-						mode: BindingMode.OneTime))
+						mode: BindingMode.OneTime)
 					 .Bind(UserStoppedTypingBehavior.BindingContextProperty,
 						getter: static (Entry inputEntry) => inputEntry.BindingContext,
 						mode: BindingMode.OneWay,
-						source: inputEntry)
+						source: inputEntry))
 					.Bind(Entry.TextProperty,
 						getter: static (ChatViewModel vm) => vm.InputText,
 						setter: static (ChatViewModel vm, string text) => vm.InputText = text)
 					.Bind(Entry.ReturnCommandProperty,
 						getter: static (ChatViewModel vm) => vm.SubmitInputTextCommand,
-						mode: BindingMode.OneTime)
-					.Assign(out Entry inputEntry),
+						mode: BindingMode.OneTime),
 
 				new Button { BorderColor = Colors.Gray, BorderWidth = 2 }
 					.Row(Row.Button)
