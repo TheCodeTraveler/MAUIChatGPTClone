@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>$(NetVersion)</TargetFramework>
@@ -6,7 +6,7 @@
 
     <ItemGroup>
       <PackageReference Include="AWSSDK.Bedrock" Version="4.0.0-preview.10" />
-      <PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.0-preview.10" />
+      <PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.0-preview.12" />
     </ItemGroup>
 
 </Project>
