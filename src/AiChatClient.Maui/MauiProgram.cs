@@ -34,6 +34,7 @@ static class MauiProgram
 		builder.Services.AddTransientWithShellRoute<ChatPage, ChatViewModel>(nameof(ChatPage));
 		
 		// Add Services
+		builder.Services.AddTransient<MCPService>();
 		builder.Services.AddTransient<IAmazonBedrockRuntime>(static _ => new AmazonBedrockRuntimeClient(AwsCredentials.AccessKeyId, AwsCredentials.SecretAccessKey, new MobileAmazonBedrockRuntimeConfig(RegionEndpoint.USEast1)));
 		builder.Services.AddSingleton<BedrockService>(static serviceProvider =>
 		{

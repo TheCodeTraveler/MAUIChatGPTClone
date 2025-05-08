@@ -7,6 +7,7 @@
     <ItemGroup>
       <PackageReference Include="AWSSDK.Bedrock" Version="4.0.1" />
       <PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.0-preview.13" />
+      <PackageReference Include="ModelContextProtocol" Version="0.1.0-preview.12" />
     </ItemGroup>
 
 </Project>

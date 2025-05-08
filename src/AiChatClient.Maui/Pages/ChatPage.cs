@@ -4,7 +4,7 @@ using static CommunityToolkit.Maui.Markup.GridRowsColumns;
 
 namespace AiChatClient.Maui;
 
-class ChatPage : BasePage<ChatViewModel>
+partial class ChatPage : BasePage<ChatViewModel>
 {
 	public ChatPage(ChatViewModel chatViewModel) : base(chatViewModel)
 	{

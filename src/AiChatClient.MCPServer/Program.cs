@@ -5,6 +5,7 @@ using Octokit;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMcpServer()
+	.WithStdioServerTransport()
 	.WithTools<GitHubTool>();
 
 builder.Services.AddSingleton<GitHubService>();
@@ -14,7 +15,5 @@ builder.Services.AddSingleton<IGitHubClient>(static _ => new GitHubClient(new Pr
 });
 
 var app = builder.Build();
-
-app.MapGet("/", () => "Hello World!");
 
 app.Run();

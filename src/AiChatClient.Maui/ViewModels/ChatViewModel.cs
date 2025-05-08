@@ -1,8 +1,6 @@
 using AiChatClient.Common;
-using Amazon.BedrockRuntime;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.AI;
 using Trace = System.Diagnostics.Trace;
 
 namespace AiChatClient.Maui;
@@ -12,10 +10,10 @@ public partial class ChatViewModel(BedrockService bedrockService) : BaseViewMode
 	readonly BedrockService _bedrockService = bedrockService;
 
 	[ObservableProperty]
-	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
+	public partial string InputText { get; set; } = string.Empty;
 
 	[ObservableProperty]
-	public partial string InputText { get; set; } = string.Empty;
+	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
 
 	[ObservableProperty]
 	public partial string OutputText { get; private set; } = string.Empty;
