@@ -1,9 +1,6 @@
-using Microsoft.Extensions.Http.Resilience;
-using Polly;
-
 namespace AiChatClient.Maui;
 
-class App(AppShell appShell) : Application
+partial class App(AppShell appShell) : Application
 {
 	readonly AppShell _appShell = appShell;
 
