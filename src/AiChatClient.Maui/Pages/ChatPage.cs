@@ -48,7 +48,7 @@ partial class ChatPage : BasePage<ChatViewModel>
 						source: inputEntry))
 					.Bind(Entry.TextProperty,
 						getter: static (ChatViewModel vm) => vm.InputText,
-						setter: static (ChatViewModel vm, string text) => vm.InputText = text)
+						setter: static (vm, text) => vm.InputText = text ?? string.Empty)
 					.Bind(Entry.ReturnCommandProperty,
 						getter: static (ChatViewModel vm) => vm.SubmitInputTextCommand,
 						mode: BindingMode.OneTime),
