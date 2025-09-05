@@ -35,12 +35,13 @@ static class MauiProgram
 		
 		// Add Services
 		builder.Services.AddTransient<IAmazonBedrockRuntime>(static _ => new AmazonBedrockRuntimeClient(AwsCredentials.AccessKeyId, AwsCredentials.SecretAccessKey, new MobileAmazonBedrockRuntimeConfig(RegionEndpoint.USEast1)));
-		builder.Services.AddSingleton<BedrockService>(static serviceProvider =>
+		builder.Services.AddSingleton<ChatClientService>(static serviceProvider =>
 		{
 			const string modelId = "anthropic.claude-v2";
 			var runtime = serviceProvider.GetRequiredService<IAmazonBedrockRuntime>();
+			var client = runtime.AsIChatClient(modelId);
 
-			return new(runtime, modelId);
+			return new(client);
 		});
 		
 		return builder.Build();

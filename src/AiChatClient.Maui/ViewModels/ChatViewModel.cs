@@ -7,9 +7,9 @@ using Trace = System.Diagnostics.Trace;
 
 namespace AiChatClient.Maui;
 
-public partial class ChatViewModel(BedrockService bedrockService) : BaseViewModel
+public partial class ChatViewModel(ChatClientService chatClientService) : BaseViewModel
 {
-	readonly BedrockService _bedrockService = bedrockService;
+	readonly ChatClientService _chatClientService = chatClientService;
 
 	[ObservableProperty]
 	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
@@ -30,7 +30,7 @@ public partial class ChatViewModel(BedrockService bedrockService) : BaseViewMode
 		
 		try
 		{
-			await foreach (var response in _bedrockService.GetStreamingResponseAsync(inputText, new(), token).ConfigureAwait(false))
+			await foreach (var response in _chatClientService.GetStreamingResponseAsync(inputText, new(), token).ConfigureAwait(false))
 			{
 				if (response.Text is not null)
 				{
