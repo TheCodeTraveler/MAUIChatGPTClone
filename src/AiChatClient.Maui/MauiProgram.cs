@@ -1,11 +1,14 @@
-﻿using AiChatClient.Common;
+﻿using System.ClientModel;
+using AiChatClient.Common;
 using AiChatClient.Console;
 using Amazon;
 using Amazon.BedrockRuntime;
 using Amazon.Runtime;
+using Azure.AI.OpenAI;
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Http.Resilience;
 using Polly;
 
@@ -34,12 +37,12 @@ static class MauiProgram
 		builder.Services.AddTransientWithShellRoute<ChatPage, ChatViewModel>(nameof(ChatPage));
 		
 		// Add Services
-		builder.Services.AddTransient<IAmazonBedrockRuntime>(static _ => new AmazonBedrockRuntimeClient(AwsCredentials.AccessKeyId, AwsCredentials.SecretAccessKey, new MobileAmazonBedrockRuntimeConfig(RegionEndpoint.USEast1)));
-		builder.Services.AddSingleton<ChatClientService>(static serviceProvider =>
+		builder.Services.AddSingleton<ChatClientService>(static _ =>
 		{
-			const string modelId = "anthropic.claude-v2";
-			var runtime = serviceProvider.GetRequiredService<IAmazonBedrockRuntime>();
-			var client = runtime.AsIChatClient(modelId);
+			const string modelId = "o3-mini";
+			var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
+			
+			var client = new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint,  apiCredentials).AsChatClient(modelId);
 
 			return new(client);
 		});
