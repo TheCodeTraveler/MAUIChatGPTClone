@@ -14,8 +14,8 @@ partial class ChatPage : BasePage<ChatViewModel>
 			
 			RowDefinitions = Rows.Define(
 				(Row.OutputText, GridLength.Star),
-				(Row.InputText, 30),
-				(Row.Button, 30),
+				(Row.InputText, 40),
+				(Row.Button, 40),
 				(Row.Indicator, 20)),
 			
 			Children =
@@ -36,9 +36,9 @@ partial class ChatPage : BasePage<ChatViewModel>
 					.FillHorizontal().Bottom()
 					.Behaviors(new UserStoppedTypingBehavior
 					{
-						MinimumLengthThreshold = 2,
+						MinimumLengthThreshold = 5,
 						ShouldDismissKeyboardAutomatically = true,
-						StoppedTypingTimeThreshold = 2_000
+						StoppedTypingTimeThreshold = 5_000
 					}.Bind(UserStoppedTypingBehavior.CommandProperty,
 						getter: static (ChatViewModel vm) => vm.SubmitInputTextCommand,
 						mode: BindingMode.OneTime)

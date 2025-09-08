@@ -1,16 +1,11 @@
 ﻿using System.ClientModel;
 using AiChatClient.Common;
 using AiChatClient.Console;
-using Amazon;
-using Amazon.BedrockRuntime;
-using Amazon.Runtime;
 using Azure.AI.OpenAI;
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.AI;
-using Microsoft.Extensions.Http.Resilience;
-using Polly;
 
 namespace AiChatClient.Maui;
 
@@ -37,36 +32,19 @@ static class MauiProgram
 		builder.Services.AddTransientWithShellRoute<ChatPage, ChatViewModel>(nameof(ChatPage));
 		
 		// Add Services
-		builder.Services.AddSingleton<ChatClientService>(static _ =>
-		{
-			const string modelId = "o3-mini";
-			var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
-			
-			var client = new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint,  apiCredentials).AsChatClient(modelId);
-
-			return new(client);
-		});
+		builder.Services.AddSingleton<InventoryService>();
+		builder.Services.AddChatClient(CreateChatClient());
+		builder.Services.AddSingleton<ChatClientService>();
 		
 		return builder.Build();
 	}
 
-	sealed class MobileAmazonBedrockRuntimeConfig : AmazonBedrockRuntimeConfig
+	static IChatClient CreateChatClient()
 	{
-		public MobileAmazonBedrockRuntimeConfig(RegionEndpoint regionEndpoint)
-		{
-			RegionEndpoint = regionEndpoint;
-			RetryMode = RequestRetryMode.Adaptive;
-		}
-	}
-	
-	sealed class MobileHttpRetryStrategyOptions : HttpRetryStrategyOptions
-	{
-		public MobileHttpRetryStrategyOptions()
-		{
-			BackoffType = DelayBackoffType.Exponential;
-			MaxRetryAttempts = 3;
-			UseJitter = true;
-			Delay = TimeSpan.FromSeconds(2);
-		}
+		const string modelId = "o3-mini";
+		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
+
+		var azureOpenAiClient = new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials).AsChatClient(modelId);
+		return new ChatClientBuilder(azureOpenAiClient).UseFunctionInvocation().Build();
 	}
 }
