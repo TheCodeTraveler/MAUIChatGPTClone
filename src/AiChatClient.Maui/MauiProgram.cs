@@ -44,7 +44,7 @@ static class MauiProgram
 		const string modelId = "o3-mini";
 		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
 
-		var azureOpenAiClient = new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials).AsChatClient(modelId);
+		var azureOpenAiClient = new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials).GetChatClient(modelId).AsIChatClient();
 		return new ChatClientBuilder(azureOpenAiClient).UseFunctionInvocation().Build();
 	}
 }

@@ -21,7 +21,7 @@ public abstract class BasePage : ContentPage
 
 		if (string.IsNullOrWhiteSpace(Title))
 		{
-			Title = GetType().Name;
+			Title = GetType()?.Name;
 		}
 	}
 
