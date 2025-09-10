@@ -1,4 +1,4 @@
-namespace AiChatClient.Console;
+namespace AiChatClient.Maui;
 
 public static class AzureOpenAiCredentials
 {
