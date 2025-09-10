@@ -58,9 +58,9 @@
         <PackageReference Include="CommunityToolkit.Maui.Markup" Version="6.0.1" />
         <PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.8.0" />
-        <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.9.0" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.110" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
         <PackageReference Include="Azure.AI.OpenAI" Version="2.3.0-beta.2" />
         <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.8.0-preview.1.25412.6" />
         <PackageReference Include="Microsoft.Extensions.AI" Version="9.8.0" />
