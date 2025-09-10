@@ -8,4 +8,5 @@
   <Project Path="AiChatClient.Common\AiChatClient.Common.csproj" Type="Classic C#" />
   <Project Path="AiChatClient.Console\AiChatClient.Console.csproj" Type="Classic C#" />
   <Project Path="AiChatClient.Maui\AiChatClient.Maui.csproj" Type="Classic C#" />
+  <Project Path="AiChatClient.UnitTests\AiChatClient.UnitTests.csproj" Type="Classic C#" />
 </Solution>

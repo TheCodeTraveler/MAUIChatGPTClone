@@ -41,10 +41,15 @@ static class MauiProgram
 
 	static IChatClient CreateChatClient()
 	{
-		const string modelId = "o3-mini";
+		const string modelId = "gpt-4.1-nano";
 		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
 
-		var azureOpenAiClient = new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials).GetChatClient(modelId).AsIChatClient();
-		return new ChatClientBuilder(azureOpenAiClient).UseFunctionInvocation().Build();
+		var azureOpenAiClient = new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
+			.GetChatClient(modelId)
+			.AsIChatClient();
+		
+		return new ChatClientBuilder(azureOpenAiClient)
+			.UseFunctionInvocation()
+			.Build();
 	}
 }
