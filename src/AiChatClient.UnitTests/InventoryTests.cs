@@ -12,7 +12,6 @@ public class InventoryTests : BaseTest
 	{
 		// Arrange
 		var inventoryService = new InventoryService();
-		var chatConfiguration = new ChatConfiguration(ChatClient);
 		var chatOptions = new ChatOptions
 		{
 			Tools =
@@ -23,7 +22,7 @@ public class InventoryTests : BaseTest
 
 		List<ChatMessage> chatMessages =
 		[
-			new ChatMessage(ChatRole.User, "How many bottles of wine do I have in inventory?")
+			new(ChatRole.User, "How many bottles of wine do I have in inventory?")
 		];
 
 		// Act
@@ -55,7 +54,7 @@ public class InventoryTests : BaseTest
 
 		List<ChatMessage> chatMessages =
 		[
-			new ChatMessage(ChatRole.User, "How many bottles of wine do I have in inventory?")
+			new(ChatRole.User, "How many bottles of wine do I have in inventory?")
 		];
 
 		// Act

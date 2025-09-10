@@ -2,7 +2,7 @@ using Microsoft.Maui.Controls;
 
 namespace AiChatClient.Maui;
 
-partial class AppShell: Shell
+partial class AppShell : Shell
 {
 	public AppShell(ChatPage chatPage)
 	{

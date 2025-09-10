@@ -16,7 +16,7 @@ public partial class ChatViewModel(ChatClientService chatClientService, Inventor
 
 	[ObservableProperty]
 	public partial string OutputText { get; private set; } = string.Empty;
-	
+
 	[ObservableProperty]
 	public partial string InputText { get; set; } = string.Empty;
 
@@ -35,7 +35,7 @@ public partial class ChatViewModel(ChatClientService chatClientService, Inventor
 				AIFunctionFactory.Create(_inventoryService.GetWines)
 			],
 		};
-		
+
 		try
 		{
 			await foreach (var response in _chatClientService.GetStreamingResponseAsync(inputText, chatOptions, token).ConfigureAwait(false))

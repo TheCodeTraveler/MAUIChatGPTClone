@@ -2,10 +2,10 @@
 using AiChatClient.Common;
 using AiChatClient.Console;
 using Azure.AI.OpenAI;
-using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Logging;
 
 namespace AiChatClient.Maui;
 
@@ -27,15 +27,15 @@ static class MauiProgram
 #endif
 		builder.Services.AddSingleton<App>();
 		builder.Services.AddSingleton<AppShell>();
-		
+
 		// Add Pages + View Models
 		builder.Services.AddTransientWithShellRoute<ChatPage, ChatViewModel>(nameof(ChatPage));
-		
+
 		// Add Services
 		builder.Services.AddSingleton<InventoryService>();
 		builder.Services.AddChatClient(CreateChatClient());
 		builder.Services.AddSingleton<ChatClientService>();
-		
+
 		return builder.Build();
 	}
 
@@ -47,7 +47,7 @@ static class MauiProgram
 		var azureOpenAiClient = new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
 			.GetChatClient(modelId)
 			.AsIChatClient();
-		
+
 		return new ChatClientBuilder(azureOpenAiClient)
 			.UseFunctionInvocation()
 			.Build();

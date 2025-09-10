@@ -11,13 +11,13 @@ partial class ChatPage : BasePage<ChatViewModel>
 		Content = new Grid
 		{
 			RowSpacing = 12,
-			
+
 			RowDefinitions = Rows.Define(
 				(Row.OutputText, GridLength.Star),
 				(Row.InputText, 40),
 				(Row.Button, 40),
 				(Row.Indicator, 20)),
-			
+
 			Children =
 			{
 				new ScrollView
@@ -63,7 +63,7 @@ partial class ChatPage : BasePage<ChatViewModel>
 					.Bind(WidthRequestProperty,
 						getter: static inputEntry => inputEntry.Width,
 						source: inputEntry),
-				
+
 				new ActivityIndicator()
 					.Row(Row.Indicator)
 					.Bind(IsEnabledProperty,
