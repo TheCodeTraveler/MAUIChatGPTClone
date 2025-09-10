@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AiChatClient.Common\AiChatClient.Common.csproj" />
+      <ProjectReference Include="..\AiChatClient.Maui\AiChatClient.Maui.csproj" />
     </ItemGroup>
 
 </Project>

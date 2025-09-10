@@ -1,5 +1,5 @@
 using System.ClientModel;
-using AiChatClient.Console;
+using AiChatClient.Maui;
 using Azure.AI.OpenAI;
 using Microsoft.Extensions.AI;
 

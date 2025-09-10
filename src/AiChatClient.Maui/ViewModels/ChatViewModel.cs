@@ -1,16 +1,12 @@
-using AiChatClient.Common;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.AI;
-using Trace = System.Diagnostics.Trace;
 
 namespace AiChatClient.Maui;
 
-public partial class ChatViewModel(ChatClientService chatClientService, InventoryService inventoryService) : BaseViewModel
+public partial class ChatViewModel : BaseViewModel
 {
-	readonly ChatClientService _chatClientService = chatClientService;
-	readonly InventoryService _inventoryService = inventoryService;
-
 	[ObservableProperty]
 	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
 
@@ -28,20 +24,10 @@ public partial class ChatViewModel(ChatClientService chatClientService, Inventor
 		CanSubmitInputTextExecute = false;
 		OutputText = string.Empty;
 
-		var chatOptions = new ChatOptions
-		{
-			Tools =
-			[
-				AIFunctionFactory.Create(_inventoryService.GetWines)
-			],
-		};
-
 		try
 		{
-			await foreach (var response in _chatClientService.GetStreamingResponseAsync(inputText, chatOptions, token).ConfigureAwait(false))
-			{
-				OutputText = string.Concat(OutputText, response.Text);
-			}
+			await Task.Delay(TimeSpan.FromSeconds(1), token);
+			OutputText = "Uhh - You haven't implemented any GenAI yet.";
 		}
 		catch (Exception e)
 		{

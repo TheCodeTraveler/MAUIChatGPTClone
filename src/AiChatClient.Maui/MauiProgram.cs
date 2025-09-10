@@ -1,6 +1,5 @@
-﻿using System.ClientModel;
-using AiChatClient.Common;
-using AiChatClient.Console;
+﻿#pragma warning disable CA1416
+using System.ClientModel;
 using Azure.AI.OpenAI;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
@@ -32,24 +31,7 @@ static class MauiProgram
 		builder.Services.AddTransientWithShellRoute<ChatPage, ChatViewModel>(nameof(ChatPage));
 
 		// Add Services
-		builder.Services.AddSingleton<InventoryService>();
-		builder.Services.AddChatClient(CreateChatClient());
-		builder.Services.AddSingleton<ChatClientService>();
 
 		return builder.Build();
-	}
-
-	static IChatClient CreateChatClient()
-	{
-		const string modelId = "gpt-4.1-nano";
-		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
-
-		var azureOpenAiClient = new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
-			.GetChatClient(modelId)
-			.AsIChatClient();
-
-		return new ChatClientBuilder(azureOpenAiClient)
-			.UseFunctionInvocation()
-			.Build();
 	}
 }
