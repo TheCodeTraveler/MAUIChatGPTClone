@@ -1,5 +1,8 @@
 name: Build
 
+env:
+    XcodeVersion: '26.2'
+
 on:
   push:
     branches:
@@ -29,7 +32,7 @@ jobs:
       if: runner.os == 'macOS'
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: latest-stable
+        xcode-version: ${{ env.XcodeVersion }}
 
     - name: Display .NET Info
       run: 'dotnet --info'
