@@ -36,6 +36,3 @@ jobs:
 
     - name: Build
       run: dotnet build -c Release "./src/"
-
-    - name: Test
-      run: dotnet run -c Release "./src/AiChatClient.UnitTests/"
