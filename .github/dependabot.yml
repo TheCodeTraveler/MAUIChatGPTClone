@@ -10,7 +10,11 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "dotnet-sdk"
-    directory: "/src"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "wednesday"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
