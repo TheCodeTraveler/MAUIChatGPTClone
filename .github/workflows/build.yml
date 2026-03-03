@@ -15,10 +15,10 @@ jobs:
     - uses: actions/checkout@v4
 
     # Install .NET SDK
-    - name: Setup .NET 9.0.x
+    - name: Setup .NET 10.0.x
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.x' # Adjust to your required .NET SDK version
+        dotnet-version: '10.x' # Adjust to your required .NET SDK version
 
     - name: Install .NET MAUI
       run: |
@@ -36,3 +36,6 @@ jobs:
 
     - name: Build
       run: dotnet build -c Release "./src/"
+
+    - name: Test
+      run: dotnet run -c Release "./src/AiChatClient.UnitTests/"
