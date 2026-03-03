@@ -16,7 +16,7 @@ partial class ChatPage : BasePage<ChatViewModel>
 				(Row.OutputText, GridLength.Star),
 				(Row.InputText, 40),
 				(Row.Button, 40),
-				(Row.Indicator, 20)),
+				(Row.Indicator, 30)),
 
 			Children =
 			{

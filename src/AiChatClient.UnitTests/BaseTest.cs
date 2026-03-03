@@ -23,7 +23,7 @@ public abstract class BaseTest
 
 	static IChatClient CreateChatClient()
 	{
-		const string modelId = "gpt-4.1-nano";
+		const string modelId = "gpt-4.1";
 		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
 
 		var azureOpenAiClient = new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
