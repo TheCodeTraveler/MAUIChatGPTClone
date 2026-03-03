@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
 namespace AiChatClient.Maui;
 
@@ -17,7 +15,11 @@ public abstract class BasePage : ContentPage
 		BindingContext = viewModel;
 		Padding = 24;
 
-		On<iOS>().SetUseSafeArea(shouldUseSafeArea);
+		SafeAreaEdges = shouldUseSafeArea switch
+		{
+			true => SafeAreaEdges.All,
+			false => SafeAreaEdges.Default
+		};
 
 		if (string.IsNullOrWhiteSpace(Title))
 		{

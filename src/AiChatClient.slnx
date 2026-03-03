@@ -1,12 +1,13 @@
-﻿<Solution>
+<Solution>
   <Folder Name="/Solution Items/">
     <File Path="..\global.json" />
     <File Path="..\Directory.Build.props" />
     <File Path="..\Directory.Build.targets" />
+    <File Path="../Directory.Packages.props" />
     <File Path="..\.editorconfig" />
   </Folder>
-  <Project Path="AiChatClient.Common\AiChatClient.Common.csproj" Type="Classic C#" />
-  <Project Path="AiChatClient.Console\AiChatClient.Console.csproj" Type="Classic C#" />
-  <Project Path="AiChatClient.Maui\AiChatClient.Maui.csproj" Type="Classic C#" />
-  <Project Path="AiChatClient.UnitTests\AiChatClient.UnitTests.csproj" Type="Classic C#" />
+  <Project Path="AiChatClient.Common\AiChatClient.Common.csproj" />
+  <Project Path="AiChatClient.Console\AiChatClient.Console.csproj" />
+  <Project Path="AiChatClient.Maui\AiChatClient.Maui.csproj" />
+  <Project Path="AiChatClient.UnitTests\AiChatClient.UnitTests.csproj" />
 </Solution>
