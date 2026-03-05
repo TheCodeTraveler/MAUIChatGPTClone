@@ -35,6 +35,8 @@ static class MauiProgram
 		builder.Services.AddSingleton<InventoryService>();
 		builder.Services.AddChatClient(CreateChatClient());
 		builder.Services.AddSingleton<ChatClientService>();
+		builder.Services.AddEmbeddingGenerator(CreateEmbeddingGenerator());
+		builder.Services.AddSingleton<PdfIngestionService>();
 
 		return builder.Build();
 	}
@@ -51,5 +53,15 @@ static class MauiProgram
 		return new ChatClientBuilder(azureOpenAiClient)
 			.UseFunctionInvocation()
 			.Build();
+	}
+
+	static IEmbeddingGenerator<string, Embedding<float>> CreateEmbeddingGenerator()
+	{
+		const string embeddingModelId = "text-embedding-3-small";
+		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
+
+		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
+			.GetEmbeddingClient(embeddingModelId)
+			.AsIEmbeddingGenerator();
 	}
 }
