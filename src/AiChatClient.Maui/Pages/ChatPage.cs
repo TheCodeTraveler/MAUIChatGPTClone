@@ -1,3 +1,4 @@
+using AiChatClient.Common.Models;
 using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Markup;
 using static CommunityToolkit.Maui.Markup.GridRowsColumns;
@@ -35,7 +36,7 @@ partial class ChatPage : BasePage<ChatViewModel>
 						new Label()
 							.Font(italic: true)
 							.Bind(Label.TextProperty,
-								getter: static (string x) => x)),
+								getter: static (EmbeddedPdfModel x) => x.Name)),
 				}.Row(Row.IngestedFiles)
 				 .Bind(CollectionView.ItemsSourceProperty,
 					getter: static (ChatViewModel vm) => vm.IngestedFileNames),

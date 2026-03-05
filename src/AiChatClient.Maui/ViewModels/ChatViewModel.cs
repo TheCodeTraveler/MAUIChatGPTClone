@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using AiChatClient.Common;
+using AiChatClient.Common.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.AI;
@@ -19,7 +20,7 @@ public partial class ChatViewModel(
 	readonly InventoryService _inventoryService = inventoryService;
 	readonly PdfIngestionService _pdfIngestionService = pdfIngestionService;
 
-	public ObservableCollection<string> IngestedFileNames { get; } = [];
+	public ObservableCollection<EmbeddedPdfModel> IngestedFileNames { get; } = [];
 
 	[ObservableProperty]
 	public partial string InputText { get; set; } = string.Empty;
@@ -55,7 +56,7 @@ public partial class ChatViewModel(
 			using var stream = await result.OpenReadAsync().ConfigureAwait(false);
 			await _pdfIngestionService.IngestPdfAsync(stream, result.FileName, token).ConfigureAwait(false);
 
-			IngestedFileNames.Add(result.FileName);
+			IngestedFileNames.Add(new(result.FileName));
 		}
 		catch (Exception e)
 		{
