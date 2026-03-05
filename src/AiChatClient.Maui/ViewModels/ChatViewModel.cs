@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using AiChatClient.Common;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -18,18 +19,16 @@ public partial class ChatViewModel(
 	readonly InventoryService _inventoryService = inventoryService;
 	readonly PdfIngestionService _pdfIngestionService = pdfIngestionService;
 
+	public ObservableCollection<string> IngestedFileNames { get; } = [];
+
 	[ObservableProperty]
 	public partial string InputText { get; set; } = string.Empty;
 
-	[ObservableProperty]
+	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(SubmitInputTextCommand))]
 	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
 
 	[ObservableProperty]
 	public partial string OutputText { get; private set; } = string.Empty;
-
-
-	[ObservableProperty]
-	public partial string IngestedFileName { get; private set; } = string.Empty;
 
 	[RelayCommand]
 	async Task PickAndIngestPdf(CancellationToken token)
@@ -56,7 +55,7 @@ public partial class ChatViewModel(
 			using var stream = await result.OpenReadAsync().ConfigureAwait(false);
 			await _pdfIngestionService.IngestPdfAsync(stream, result.FileName, token).ConfigureAwait(false);
 
-			IngestedFileName = result.FileName;
+			IngestedFileNames.Add(result.FileName);
 		}
 		catch (Exception e)
 		{

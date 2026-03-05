@@ -11,14 +11,10 @@ partial class ChatPage : BasePage<ChatViewModel>
 		Content = new Grid
 		{
 			RowSpacing = 12,
-			ColumnSpacing = 8,
-
-			ColumnDefinitions = Columns.Define(
-				(Column.PdfIngestButton, 120),
-				(Column.Content, GridLength.Star)),
 
 			RowDefinitions = Rows.Define(
 				(Row.PdfIngestion, 40),
+				(Row.IngestedFiles, 80),
 				(Row.OutputText, GridLength.Star),
 				(Row.InputText, 40),
 				(Row.Button, 40),
@@ -27,17 +23,22 @@ partial class ChatPage : BasePage<ChatViewModel>
 			Children =
 			{
 				new Button { BorderColor = Colors.Gray, BorderWidth = 2 }
-					.Row(Row.PdfIngestion).Column(Column.PdfIngestButton)
+					.Row(Row.PdfIngestion)
 					.Text("Ingest PDF")
 					.Bind(Button.CommandProperty,
 						getter: static (ChatViewModel vm) => vm.PickAndIngestPdfCommand,
 						mode: BindingMode.OneTime),
 
-				new Label()
-					.Row(Row.PdfIngestion).Column(Column.Content)
-					.CenterVertical()
-					.Bind(Label.TextProperty,
-						getter: static (ChatViewModel vm) => vm.IngestedFileName),
+				new CollectionView
+				{
+					ItemTemplate = new DataTemplate(() =>
+						new Label()
+							.Font(italic: true)
+							.Bind(Label.TextProperty,
+								getter: static (string x) => x)),
+				}.Row(Row.IngestedFiles)
+				 .Bind(CollectionView.ItemsSourceProperty,
+					getter: static (ChatViewModel vm) => vm.IngestedFileNames),
 
 				new ScrollView
 				{
@@ -46,11 +47,11 @@ partial class ChatPage : BasePage<ChatViewModel>
 						.TextTop().TextJustify()
 						.Bind(Label.TextProperty,
 							getter: static (ChatViewModel vm) => vm.OutputText),
-				}.Row(Row.OutputText).ColumnSpan(2),
+				}.Row(Row.OutputText),
 
 				new Entry { ReturnType = ReturnType.Go }
 					.Assign(out Entry inputEntry)
-					.Row(Row.InputText).ColumnSpan(2)
+					.Row(Row.InputText)
 					.Placeholder("Ask Anything")
 					.FillHorizontal().Bottom()
 					.Behaviors(new UserStoppedTypingBehavior
@@ -73,7 +74,7 @@ partial class ChatPage : BasePage<ChatViewModel>
 						mode: BindingMode.OneTime),
 
 				new Button { BorderColor = Colors.Gray, BorderWidth = 2 }
-					.Row(Row.Button).ColumnSpan(2)
+					.Row(Row.Button)
 					.Text("Go")
 					.Center()
 					.Bind(Button.CommandProperty,
@@ -84,7 +85,7 @@ partial class ChatPage : BasePage<ChatViewModel>
 						source: inputEntry),
 
 				new ActivityIndicator()
-					.Row(Row.Indicator).ColumnSpan(2)
+					.Row(Row.Indicator)
 					.Bind(IsEnabledProperty,
 						getter: static (ChatViewModel vm) => vm.CanSubmitInputTextExecute,
 						convert: static (bool canSubmitInputTextExecute) => !canSubmitInputTextExecute)
@@ -101,15 +102,10 @@ partial class ChatPage : BasePage<ChatViewModel>
 	enum Row
 	{
 		PdfIngestion,
+		IngestedFiles,
 		OutputText,
 		InputText,
 		Button,
 		Indicator
-	}
-
-	enum Column
-	{
-		PdfIngestButton,
-		Content
 	}
 }

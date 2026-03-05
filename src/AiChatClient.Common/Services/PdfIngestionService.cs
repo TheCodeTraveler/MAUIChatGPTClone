@@ -43,8 +43,8 @@ public class PdfIngestionService(IEmbeddingGenerator<string, Embedding<float>> e
 
 		var results = _entries
 			.Select(e => (Entry: e, Similarity: TensorPrimitives.CosineSimilarity(new ReadOnlySpan<float>(queryVector), new ReadOnlySpan<float>(e.Vector))))
-			.Where(r => r.Similarity >= _similarityThreshold)
-			.OrderByDescending(r => r.Similarity)
+			.Where(static r => r.Similarity >= _similarityThreshold)
+			.OrderByDescending(static r => r.Similarity)
 			.Take(_maxResults)
 			.ToList();
 
