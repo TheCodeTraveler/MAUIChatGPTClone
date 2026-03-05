@@ -6,11 +6,20 @@ using Trace = System.Diagnostics.Trace;
 
 namespace AiChatClient.Maui;
 
-public partial class ChatViewModel(ChatClientService chatClientService, InventoryService inventoryService, PdfIngestionService pdfIngestionService) : BaseViewModel
+public partial class ChatViewModel(
+	ChatClientService chatClientService, 
+	InventoryService inventoryService, 
+	PdfIngestionService pdfIngestionService,
+	IFilePicker filePicker) 
+	: BaseViewModel
 {
+	readonly IFilePicker _filePicker = filePicker;
 	readonly ChatClientService _chatClientService = chatClientService;
 	readonly InventoryService _inventoryService = inventoryService;
 	readonly PdfIngestionService _pdfIngestionService = pdfIngestionService;
+
+	[ObservableProperty]
+	public partial string InputText { get; set; } = string.Empty;
 
 	[ObservableProperty]
 	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
@@ -18,8 +27,6 @@ public partial class ChatViewModel(ChatClientService chatClientService, Inventor
 	[ObservableProperty]
 	public partial string OutputText { get; private set; } = string.Empty;
 
-	[ObservableProperty]
-	public partial string InputText { get; set; } = string.Empty;
 
 	[ObservableProperty]
 	public partial string IngestedFileName { get; private set; } = string.Empty;
@@ -27,9 +34,11 @@ public partial class ChatViewModel(ChatClientService chatClientService, Inventor
 	[RelayCommand]
 	async Task PickAndIngestPdf(CancellationToken token)
 	{
+		CanSubmitInputTextExecute = false;
+
 		try
 		{
-			var result = await FilePicker.Default.PickAsync(new PickOptions
+			var result = await _filePicker.PickAsync(new PickOptions
 			{
 				PickerTitle = "Select a PDF file",
 				FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
@@ -52,6 +61,10 @@ public partial class ChatViewModel(ChatClientService chatClientService, Inventor
 		catch (Exception e)
 		{
 			Trace.TraceError(e.ToString());
+		}
+		finally
+		{
+			CanSubmitInputTextExecute = true;
 		}
 	}
 

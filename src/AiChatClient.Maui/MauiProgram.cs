@@ -1,6 +1,5 @@
 ﻿using System.ClientModel;
 using AiChatClient.Common;
-using AiChatClient.Console;
 using Azure.AI.OpenAI;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
@@ -33,10 +32,12 @@ static class MauiProgram
 
 		// Add Services
 		builder.Services.AddSingleton<InventoryService>();
-		builder.Services.AddChatClient(CreateChatClient());
 		builder.Services.AddSingleton<ChatClientService>();
-		builder.Services.AddEmbeddingGenerator(CreateEmbeddingGenerator());
 		builder.Services.AddSingleton<PdfIngestionService>();
+		builder.Services.AddSingleton<IFilePicker>(static _ => FilePicker.Default);
+
+		builder.Services.AddChatClient(CreateChatClient());
+		builder.Services.AddEmbeddingGenerator(CreateEmbeddingGenerator());
 
 		return builder.Build();
 	}
