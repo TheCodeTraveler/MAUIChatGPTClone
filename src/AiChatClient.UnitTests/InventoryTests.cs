@@ -28,7 +28,7 @@ public class InventoryTests : BaseTest
 
 		// Act
 		var response = await ChatClient.GetResponseAsync(chatMessages, chatOptions);
-		var inventoryCountResponseDigits = new string(response.Text.Where(char.IsDigit).ToArray());
+		var inventoryCountResponseDigits = new string([.. response.Text.Where(char.IsDigit)]);
 		_ = int.TryParse(inventoryCountResponseDigits, out var winesInInventoryResponse);
 
 		// Assert
