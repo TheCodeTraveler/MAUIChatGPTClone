@@ -20,7 +20,15 @@ static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+			})
+			.ConfigureMauiHandlers(static handlers =>
+			{
+#if IOS || MACCATALYST
+				handlers.AddHandler<CollectionView, CollectionViewNoScrollBarsHandler>();
+#endif
 			});
+
+
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif

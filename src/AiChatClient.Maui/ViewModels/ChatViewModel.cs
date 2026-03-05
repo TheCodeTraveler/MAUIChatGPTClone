@@ -41,20 +41,14 @@ public partial class ChatViewModel(
 			var result = await _filePicker.PickAsync(new PickOptions
 			{
 				PickerTitle = "Select a PDF file",
-				FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-				{
-					[DevicePlatform.Android] = ["application/pdf"],
-					[DevicePlatform.iOS] = ["public.pdf"],
-					[DevicePlatform.MacCatalyst] = ["public.pdf"],
-					[DevicePlatform.WinUI] = [".pdf"],
-				})
-			}).ConfigureAwait(false);
+				FileTypes = FilePickerFileType.Pdf
+			}).WaitAsync(token);
 
-			if (result is null)
+			 if (result is null)
 				return;
 
-			using var stream = await result.OpenReadAsync().ConfigureAwait(false);
-			await _pdfIngestionService.IngestPdfAsync(stream, result.FileName, token).ConfigureAwait(false);
+			await using var stream = await result.OpenReadAsync();
+			await _pdfIngestionService.IngestPdfAsync(stream, result.FileName, token);
 
 			IngestedFileNames.Add(new(result.FileName));
 		}

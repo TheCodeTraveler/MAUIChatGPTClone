@@ -25,11 +25,11 @@ public class PdfIngestionService(IEmbeddingGenerator<string, Embedding<float>> e
 		if (chunks.Count is 0)
 			return;
 
-		var embeddings = await _embeddingGenerator.GenerateAsync(chunks, cancellationToken: token).ConfigureAwait(false);
-
-		for (int i = 0; i < chunks.Count; i++)
+		foreach (var chunk in chunks)
 		{
-			_entries.Add(new EmbeddingEntry(chunks[i], embeddings[i].Vector.ToArray(), fileName));
+			var embedding = await _embeddingGenerator.GenerateAsync(chunk, cancellationToken: token).ConfigureAwait(false);
+
+			_entries.Add(new EmbeddingEntry(chunk, embedding.Vector.ToArray(), fileName));
 		}
 	}
 
@@ -39,10 +39,9 @@ public class PdfIngestionService(IEmbeddingGenerator<string, Embedding<float>> e
 			return null;
 
 		var queryEmbeddings = await _embeddingGenerator.GenerateAsync([query], cancellationToken: token).ConfigureAwait(false);
-		var queryVector = queryEmbeddings[0].Vector.ToArray();
 
 		var results = _entries
-			.Select(e => (Entry: e, Similarity: TensorPrimitives.CosineSimilarity(new ReadOnlySpan<float>(queryVector), new ReadOnlySpan<float>(e.Vector))))
+			.Select(e => (Entry: e, Similarity: TensorPrimitives.CosineSimilarity(queryEmbeddings[0].Vector.Span, new ReadOnlySpan<float>(e.Vector))))
 			.Where(static r => r.Similarity >= _similarityThreshold)
 			.OrderByDescending(static r => r.Similarity)
 			.Take(_maxResults)
@@ -51,7 +50,7 @@ public class PdfIngestionService(IEmbeddingGenerator<string, Embedding<float>> e
 		if (results.Count is 0)
 			return null;
 
-		return string.Join("\n\n", results.Select(r => r.Entry.Text));
+		return string.Join("\n\n", results.Select(static r => r.Entry.Text));
 	}
 
 	static string ExtractTextFromPdf(Stream pdfStream)
@@ -73,7 +72,7 @@ public class PdfIngestionService(IEmbeddingGenerator<string, Embedding<float>> e
 
 		var words = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-		for (int i = 0; i < words.Length; i += _chunkSize - _chunkOverlap)
+		for (var i = 0; i < words.Length; i += _chunkSize - _chunkOverlap)
 		{
 			var chunk = string.Join(' ', words.Skip(i).Take(_chunkSize));
 
