@@ -2,7 +2,6 @@ using AiChatClient.Common.Models;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.VectorData;
 using UglyToad.PdfPig;
-using Trace = System.Diagnostics.Trace;
 
 namespace AiChatClient.Common;
 
