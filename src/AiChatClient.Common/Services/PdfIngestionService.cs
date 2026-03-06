@@ -21,7 +21,7 @@ public class PdfIngestionService(IEmbeddingGenerator<string, Embedding<float>> e
 	public async Task IngestPdfAsync(Stream pdfStream, string fileName, CancellationToken token = default)
 	{
 		var text = ExtractTextFromPdf(pdfStream);
-		IReadOnlyList<string> chunks = [.. text.Chunk(_chunkSize).Select(static x => new string(x))];
+		IReadOnlyList<string> chunks = [.. ChunkText(text)];
 
 		if (chunks.Count is 0)
 			return;
