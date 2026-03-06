@@ -21,10 +21,12 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.3" />
     <PackageVersion Include="Microsoft.Maui.Controls" Version="10.0.41" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
-    <PackageVersion Include="NUnit" Version="4.5.0" />
+    <PackageVersion Include="NUnit" Version="4.5.1" />
     <PackageVersion Include="NUnit3TestAdapter" Version="6.1.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.11.2" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
     <PackageVersion Include="PdfPig" Version="0.1.13" />
+    <PackageVersion Include="Microsoft.Extensions.VectorData.Abstractions" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.SemanticKernel.Connectors.Qdrant" Version="1.73.0-preview" />
   </ItemGroup>
 </Project>

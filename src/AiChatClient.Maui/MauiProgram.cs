@@ -2,12 +2,16 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using AiChatClient.Common;
+using AiChatClient.Common.Models;
 using AiChatClient.Maui.Pages;
 using Azure.AI.OpenAI;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.VectorData;
+using Microsoft.SemanticKernel.Connectors.Qdrant;
+using Qdrant.Client;
 
 namespace AiChatClient.Maui;
 
@@ -50,6 +54,7 @@ static class MauiProgram
 
 		builder.Services.AddChatClient(CreateChatClient());
 		builder.Services.AddEmbeddingGenerator(CreateEmbeddingGenerator());
+		builder.Services.AddSingleton(CreateVectorCollection());
 
 		return builder.Build();
 	}
@@ -83,5 +88,15 @@ static class MauiProgram
 		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
 			.GetEmbeddingClient(embeddingModelId)
 			.AsIEmbeddingGenerator();
+	}
+
+	static VectorStoreCollection<Guid, PdfChunkRecord> CreateVectorCollection()
+	{
+		const string collectionName = "pdf-chunks";
+
+		var qdrantClient = new QdrantClient("localhost", 6334);
+		var vectorStore = new QdrantVectorStore(qdrantClient, true);
+
+		return vectorStore.GetCollection<Guid, PdfChunkRecord>(collectionName);
 	}
 }

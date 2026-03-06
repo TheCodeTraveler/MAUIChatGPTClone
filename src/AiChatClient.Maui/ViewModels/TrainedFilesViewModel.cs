@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using AiChatClient.Common;
 using AiChatClient.Common.Models;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Trace = System.Diagnostics.Trace;
@@ -14,9 +15,6 @@ public partial class TrainedFilesViewModel(
 {
 	readonly IFilePicker _filePicker = filePicker;
 	readonly PdfIngestionService _pdfIngestionService = pdfIngestionService;
-
-	public IReadOnlyList<EmbeddedPdfModel> IngestedFileNames =>
-		[.. _pdfIngestionService.IngestedFileNames.Select(n => new EmbeddedPdfModel(n))];
 
 	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(PickAndIngestPdfCommand))]
 	public partial bool CanPickAndIngestPdfCommandExecute { get; private set; } = true;
@@ -40,7 +38,7 @@ public partial class TrainedFilesViewModel(
 			await using var stream = await result.OpenReadAsync();
 			await _pdfIngestionService.IngestPdfAsync(stream, result.FileName, token);
 
-			OnPropertyChanged(nameof(IngestedFileNames));
+			await Toast.Make($"Successfully ingested {result.FileName}").Show(token);
 		}
 		catch (Exception e)
 		{

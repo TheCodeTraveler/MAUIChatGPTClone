@@ -72,6 +72,7 @@
         <PackageReference Include="Azure.AI.OpenAI" />
         <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
         <PackageReference Include="Microsoft.Extensions.AI" />
+        <PackageReference Include="Microsoft.SemanticKernel.Connectors.Qdrant" />
     </ItemGroup>
 
     <ItemGroup>
