@@ -7,7 +7,7 @@ namespace AiChatClient.UnitTests;
 
 public abstract class BaseTest
 {
-	protected IChatClient ChatClient { get; private set; } = CreateChatClient();
+	protected IChatClient ChatClient { get; } = CreateChatClient();
 
 	[SetUp]
 	public virtual void Setup()

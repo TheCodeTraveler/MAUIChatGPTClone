@@ -1,13 +1,19 @@
+using AiChatClient.Maui.Pages;
 using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Markup;
 using static CommunityToolkit.Maui.Markup.GridRowsColumns;
 
 namespace AiChatClient.Maui;
 
-partial class ChatPage : BasePage<ChatViewModel>
+partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 {
 	public ChatPage(ChatViewModel chatViewModel) : base(chatViewModel)
 	{
+		ToolbarItems.Add(
+			new ToolbarItem()
+				.Text("Trained Files")
+				.Invoke(item => item.Clicked += OnIngestedPdfsToolbarItemClicked));
+
 		Content = new Grid
 		{
 			RowSpacing = 12,
@@ -78,6 +84,11 @@ partial class ChatPage : BasePage<ChatViewModel>
 			}
 		};
 	}
+
+	public static string Route { get; } = $"/{nameof(ChatPage)}";
+
+	async void OnIngestedPdfsToolbarItemClicked(object? sender, EventArgs e) =>
+		await Shell.Current.GoToAsync(TrainedFilesPage.Route, true);
 
 	enum Row
 	{
