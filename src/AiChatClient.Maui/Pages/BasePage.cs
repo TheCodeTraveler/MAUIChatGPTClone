@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics;
+using AiChatClient.Maui.Pages;
 
 namespace AiChatClient.Maui;
 
-public abstract class BasePage<TViewModel>(TViewModel viewModel, bool shouldUseSafeArea = true) : BasePage(viewModel, shouldUseSafeArea)
+public abstract class BasePage<TViewModel>(TViewModel viewModel, SafeAreaEdges? safeAreaEdges = null) : BasePage(viewModel, safeAreaEdges)
 	where TViewModel : BaseViewModel
 {
 	public new TViewModel BindingContext => (TViewModel)base.BindingContext;
@@ -10,16 +11,12 @@ public abstract class BasePage<TViewModel>(TViewModel viewModel, bool shouldUseS
 
 public abstract class BasePage : ContentPage
 {
-	protected BasePage(object? viewModel = null, bool shouldUseSafeArea = true)
+	protected BasePage(object? viewModel = null, SafeAreaEdges? safeAreaEdges = null)
 	{
 		BindingContext = viewModel;
 		Padding = 24;
 
-		SafeAreaEdges = shouldUseSafeArea switch
-		{
-			true => SafeAreaEdges.All,
-			false => SafeAreaEdges.Default
-		};
+		SafeAreaEdges = safeAreaEdges ?? SafeAreaEdges.Default;
 
 		if (string.IsNullOrWhiteSpace(Title))
 		{

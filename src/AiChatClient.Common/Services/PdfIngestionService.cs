@@ -7,8 +7,8 @@ namespace AiChatClient.Common;
 
 public class PdfIngestionService(IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator)
 {
-	const int _chunkSize = 500;
-	const int _chunkOverlap = 100;
+	const int _chunkSize = 1000;
+	const int _chunkOverlap = 200;
 	const float _similarityThreshold = 0.7f;
 	const int _maxResults = 3;
 
@@ -16,11 +16,12 @@ public class PdfIngestionService(IEmbeddingGenerator<string, Embedding<float>> e
 	readonly List<EmbeddingEntry> _entries = [];
 
 	public bool HasDocuments => _entries.Count > 0;
+	public IReadOnlyList<string> IngestedFileNames => [.. _entries.Select(static x => x.SourceFile).Distinct()];
 
 	public async Task IngestPdfAsync(Stream pdfStream, string fileName, CancellationToken token = default)
 	{
 		var text = ExtractTextFromPdf(pdfStream);
-		var chunks = ChunkText(text);
+		IReadOnlyList<string> chunks = [.. text.Chunk(_chunkSize).Select(static x => new string(x))];
 
 		if (chunks.Count is 0)
 			return;

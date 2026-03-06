@@ -1,5 +1,8 @@
 ﻿using System.ClientModel;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using AiChatClient.Common;
+using AiChatClient.Maui.Pages;
 using Azure.AI.OpenAI;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
@@ -36,7 +39,8 @@ static class MauiProgram
 		builder.Services.AddSingleton<AppShell>();
 
 		// Add Pages + View Models
-		builder.Services.AddTransientWithShellRoute<ChatPage, ChatViewModel>(nameof(ChatPage));
+		builder.Services.AddTransientWithShellRoute<ChatPage, ChatViewModel>();
+		builder.Services.AddTransientWithShellRoute<TrainedFilesPage, TrainedFilesViewModel>();
 
 		// Add Services
 		builder.Services.AddSingleton<InventoryService>();
@@ -48,6 +52,13 @@ static class MauiProgram
 		builder.Services.AddEmbeddingGenerator(CreateEmbeddingGenerator());
 
 		return builder.Build();
+	}
+
+	static IServiceCollection AddTransientWithShellRoute<TView, TViewModel>(this IServiceCollection services)
+		where TView : NavigableElement, IRoutable
+		where TViewModel : class, INotifyPropertyChanged
+	{
+		return services.AddTransientWithShellRoute<TView, TViewModel>(TView.Route);
 	}
 
 	static IChatClient CreateChatClient()

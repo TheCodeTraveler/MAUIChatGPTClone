@@ -1,21 +1,24 @@
-using AiChatClient.Common.Models;
+using AiChatClient.Maui.Pages;
 using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Markup;
 using static CommunityToolkit.Maui.Markup.GridRowsColumns;
 
 namespace AiChatClient.Maui;
 
-partial class ChatPage : BasePage<ChatViewModel>
+partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 {
 	public ChatPage(ChatViewModel chatViewModel) : base(chatViewModel)
 	{
+		ToolbarItems.Add(
+			new ToolbarItem()
+				.Text("Trained Files")
+				.Invoke(item => item.Clicked += OnIngestedPdfsToolbarItemClicked));
+
 		Content = new Grid
 		{
 			RowSpacing = 12,
 
 			RowDefinitions = Rows.Define(
-				(Row.PdfIngestion, 40),
-				(Row.IngestedFiles, 80),
 				(Row.OutputText, GridLength.Star),
 				(Row.InputText, 40),
 				(Row.Button, 40),
@@ -23,24 +26,6 @@ partial class ChatPage : BasePage<ChatViewModel>
 
 			Children =
 			{
-				new Button { BorderColor = Colors.Gray, BorderWidth = 2 }
-					.Row(Row.PdfIngestion)
-					.Text("Ingest PDF")
-					.Bind(Button.CommandProperty,
-						getter: static (ChatViewModel vm) => vm.PickAndIngestPdfCommand,
-						mode: BindingMode.OneTime),
-
-				new CollectionView
-				{
-					ItemTemplate = new DataTemplate(() =>
-						new Label()
-							.Font(italic: true)
-							.Bind(Label.TextProperty,
-								getter: static (EmbeddedPdfModel x) => x.Name)),
-				}.Row(Row.IngestedFiles)
-				 .Bind(CollectionView.ItemsSourceProperty,
-					getter: static (ChatViewModel vm) => vm.IngestedFileNames),
-
 				new ScrollView
 				{
 					Content = new Label()
@@ -100,10 +85,13 @@ partial class ChatPage : BasePage<ChatViewModel>
 		};
 	}
 
+	public static string Route { get; } = $"/{nameof(ChatPage)}";
+
+	async void OnIngestedPdfsToolbarItemClicked(object? sender, EventArgs e) =>
+		await Shell.Current.GoToAsync(TrainedFilesPage.Route, true);
+
 	enum Row
 	{
-		PdfIngestion,
-		IngestedFiles,
 		OutputText,
 		InputText,
 		Button,

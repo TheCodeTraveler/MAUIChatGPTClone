@@ -1,6 +1,4 @@
-using System.Collections.ObjectModel;
 using AiChatClient.Common;
-using AiChatClient.Common.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.AI;
@@ -11,16 +9,12 @@ namespace AiChatClient.Maui;
 public partial class ChatViewModel(
 	ChatClientService chatClientService, 
 	InventoryService inventoryService, 
-	PdfIngestionService pdfIngestionService,
-	IFilePicker filePicker) 
+	PdfIngestionService pdfIngestionService) 
 	: BaseViewModel
 {
-	readonly IFilePicker _filePicker = filePicker;
 	readonly ChatClientService _chatClientService = chatClientService;
 	readonly InventoryService _inventoryService = inventoryService;
 	readonly PdfIngestionService _pdfIngestionService = pdfIngestionService;
-
-	public ObservableCollection<EmbeddedPdfModel> IngestedFileNames { get; } = [];
 
 	[ObservableProperty]
 	public partial string InputText { get; set; } = string.Empty;
@@ -30,37 +24,6 @@ public partial class ChatViewModel(
 
 	[ObservableProperty]
 	public partial string OutputText { get; private set; } = string.Empty;
-
-	[RelayCommand]
-	async Task PickAndIngestPdf(CancellationToken token)
-	{
-		CanSubmitInputTextExecute = false;
-
-		try
-		{
-			var result = await _filePicker.PickAsync(new PickOptions
-			{
-				PickerTitle = "Select a PDF file",
-				FileTypes = FilePickerFileType.Pdf
-			}).WaitAsync(token);
-
-			 if (result is null)
-				return;
-
-			await using var stream = await result.OpenReadAsync();
-			await _pdfIngestionService.IngestPdfAsync(stream, result.FileName, token);
-
-			IngestedFileNames.Add(new(result.FileName));
-		}
-		catch (Exception e)
-		{
-			Trace.TraceError(e.ToString());
-		}
-		finally
-		{
-			CanSubmitInputTextExecute = true;
-		}
-	}
 
 	[RelayCommand(IncludeCancelCommand = true, AllowConcurrentExecutions = false, CanExecute = nameof(CanSubmitInputTextExecute))]
 	async Task SubmitInputText(CancellationToken token)
