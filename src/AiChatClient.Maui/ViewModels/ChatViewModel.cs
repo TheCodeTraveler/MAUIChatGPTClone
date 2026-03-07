@@ -49,7 +49,7 @@ public partial class ChatViewModel(
 				? $"""
 					Use the following context from ingested documents to answer the question. 
 
-					Begin your response letting the user know whether the provided information stored to the local database did contain the answer or not.
+					Begin your response by stating whether the information stored in the local database contains the answer.
 					
 					Context:
 					{pdfContext}
