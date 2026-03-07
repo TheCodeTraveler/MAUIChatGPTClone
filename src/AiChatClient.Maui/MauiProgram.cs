@@ -94,9 +94,10 @@ static class MauiProgram
 		const string collectionName = "pdf-chunks";
 
 #if IOS
-		// sqlite-vec does not ship Android/iOS native binaries; use in-memory store on mobile
+		// sqlite-vec does not ship iOS native binaries; use in-memory store on iOS
 		var vectorStore = new InMemoryVectorStore();
 #else
+
 		var dbPath = Path.Combine(FileSystem.AppDataDirectory, "vectorstore.db");
 		var vectorStore = new SqliteVectorStore($"Data Source={dbPath}");
 #endif

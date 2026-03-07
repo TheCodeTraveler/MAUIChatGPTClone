@@ -6,4 +6,12 @@
         <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
     </PropertyGroup>
 
+    <!-- sqlite-vec native extension compiled for Android (Bionic libc) -->
+    <ItemGroup>
+        <AndroidNativeLibrary Include="lib\arm64-v8a\vec0.so" Abi="arm64-v8a" />
+        <AndroidNativeLibrary Include="lib\armeabi-v7a\vec0.so" Abi="armeabi-v7a" />
+        <AndroidNativeLibrary Include="lib\x86_64\vec0.so" Abi="x86_64" />
+        <AndroidNativeLibrary Include="lib\x86\vec0.so" Abi="x86" />
+    </ItemGroup>
+
 </Project>
