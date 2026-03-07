@@ -9,6 +9,7 @@ using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.VectorData;
+using Microsoft.SemanticKernel.Connectors.InMemory;
 using Microsoft.SemanticKernel.Connectors.SqliteVec;
 
 namespace AiChatClient.Maui;
@@ -92,8 +93,13 @@ static class MauiProgram
 	{
 		const string collectionName = "pdf-chunks";
 
+#if ANDROID || IOS
+		// sqlite-vec does not ship Android/iOS native binaries; use in-memory store on mobile
+		var vectorStore = new InMemoryVectorStore();
+#else
 		var dbPath = Path.Combine(FileSystem.AppDataDirectory, "vectorstore.db");
 		var vectorStore = new SqliteVectorStore($"Data Source={dbPath}");
+#endif
 
 		return vectorStore.GetCollection<string, PdfChunkRecord>(collectionName);
 	}
