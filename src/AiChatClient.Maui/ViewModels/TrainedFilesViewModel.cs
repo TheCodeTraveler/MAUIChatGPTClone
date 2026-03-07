@@ -1,6 +1,4 @@
-using System.Collections.ObjectModel;
 using AiChatClient.Common;
-using AiChatClient.Common.Models;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
