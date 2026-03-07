@@ -26,6 +26,7 @@ public class PdfIngestionService(
 		if (chunks.Count is 0)
 			return;
 
+		List<PdfChunkRecord> records = [];
 		foreach (var chunk in chunks)
 		{
 			var embedding = await _embeddingGenerator.GenerateAsync(chunk, cancellationToken: token).ConfigureAwait(false);
@@ -37,9 +38,10 @@ public class PdfIngestionService(
 				SourceFile = fileName,
 				Vector = embedding.Vector,
 			};
-
-			await _vectorCollection.UpsertAsync(record, cancellationToken: token).ConfigureAwait(false);
+			records.Add(record);
 		}
+
+		await _vectorCollection.UpsertAsync(records, cancellationToken: token).ConfigureAwait(false);
 	}
 
 	public async Task<string?> SearchAsync(string query, CancellationToken token = default)
