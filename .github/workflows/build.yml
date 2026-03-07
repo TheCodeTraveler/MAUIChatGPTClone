@@ -38,4 +38,4 @@ jobs:
       run: 'dotnet --info'
 
     - name: Build
-      run: dotnet build -c Release "./src/"
+      run: dotnet build "./src/"
