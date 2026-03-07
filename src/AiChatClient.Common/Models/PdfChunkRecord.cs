@@ -5,7 +5,7 @@ namespace AiChatClient.Common.Models;
 public class PdfChunkRecord
 {
 	[VectorStoreKey]
-	public Guid Key { get; set; } = Guid.NewGuid();
+	public string Key { get; set; } = Guid.NewGuid().ToString();
 
 	[VectorStoreData]
 	public string Text { get; set; } = string.Empty;

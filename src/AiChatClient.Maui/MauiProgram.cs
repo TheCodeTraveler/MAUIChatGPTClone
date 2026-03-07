@@ -1,6 +1,5 @@
 ﻿using System.ClientModel;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using AiChatClient.Common;
 using AiChatClient.Common.Models;
 using AiChatClient.Maui.Pages;
@@ -10,8 +9,7 @@ using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.VectorData;
-using Microsoft.SemanticKernel.Connectors.Qdrant;
-using Qdrant.Client;
+using Microsoft.SemanticKernel.Connectors.SqliteVec;
 
 namespace AiChatClient.Maui;
 
@@ -90,13 +88,13 @@ static class MauiProgram
 			.AsIEmbeddingGenerator();
 	}
 
-	static VectorStoreCollection<Guid, PdfChunkRecord> CreateVectorCollection()
+	static VectorStoreCollection<string, PdfChunkRecord> CreateVectorCollection()
 	{
 		const string collectionName = "pdf-chunks";
 
-		var qdrantClient = new QdrantClient("localhost", 6334);
-		var vectorStore = new QdrantVectorStore(qdrantClient, true);
+		var dbPath = Path.Combine(FileSystem.AppDataDirectory, "vectorstore.db");
+		var vectorStore = new SqliteVectorStore($"Data Source={dbPath}");
 
-		return vectorStore.GetCollection<Guid, PdfChunkRecord>(collectionName);
+		return vectorStore.GetCollection<string, PdfChunkRecord>(collectionName);
 	}
 }

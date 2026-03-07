@@ -7,14 +7,14 @@ namespace AiChatClient.Common;
 
 public class PdfIngestionService(
 	IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
-	VectorStoreCollection<Guid, PdfChunkRecord> vectorCollection)
+	VectorStoreCollection<string, PdfChunkRecord> vectorCollection)
 {
 	const int _chunkSize = 1000;
 	const int _chunkOverlap = 200;
 	const int _maxResults = 3;
 
 	readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator = embeddingGenerator;
-	readonly VectorStoreCollection<Guid, PdfChunkRecord> _vectorCollection = vectorCollection;
+	readonly VectorStoreCollection<string, PdfChunkRecord> _vectorCollection = vectorCollection;
 
 	public async Task IngestPdfAsync(Stream pdfStream, string fileName, CancellationToken token = default)
 	{
@@ -32,7 +32,7 @@ public class PdfIngestionService(
 
 			var record = new PdfChunkRecord
 			{
-				Key = Guid.NewGuid(),
+				Key = Guid.NewGuid().ToString(),
 				Text = chunk,
 				SourceFile = fileName,
 				Vector = embedding.Vector,
