@@ -3,7 +3,7 @@
     <File Path="..\global.json" />
     <File Path="..\Directory.Build.props" />
     <File Path="..\Directory.Build.targets" />
-    <File Path="../Directory.Packages.props" />
+    <File Path="..\Directory.Packages.props" />
     <File Path="..\.editorconfig" />
   </Folder>
   <Project Path="AiChatClient.Common\AiChatClient.Common.csproj" />

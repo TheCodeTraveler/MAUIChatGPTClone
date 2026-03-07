@@ -1,13 +1,15 @@
 ﻿using System.ClientModel;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using AiChatClient.Common;
+using AiChatClient.Common.Models;
 using AiChatClient.Maui.Pages;
 using Azure.AI.OpenAI;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.VectorData;
+using Microsoft.SemanticKernel.Connectors.SqliteVec;
 
 namespace AiChatClient.Maui;
 
@@ -50,6 +52,7 @@ static class MauiProgram
 
 		builder.Services.AddChatClient(CreateChatClient());
 		builder.Services.AddEmbeddingGenerator(CreateEmbeddingGenerator());
+		builder.Services.AddSingleton(CreateVectorCollection());
 
 		return builder.Build();
 	}
@@ -83,5 +86,15 @@ static class MauiProgram
 		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
 			.GetEmbeddingClient(embeddingModelId)
 			.AsIEmbeddingGenerator();
+	}
+
+	static VectorStoreCollection<string, PdfChunkRecord> CreateVectorCollection()
+	{
+		const string collectionName = "pdf-chunks";
+
+		var dbPath = Path.Combine(FileSystem.AppDataDirectory, "vectorstore.db");
+		var vectorStore = new SqliteVectorStore($"Data Source={dbPath}");
+
+		return vectorStore.GetCollection<string, PdfChunkRecord>(collectionName);
 	}
 }

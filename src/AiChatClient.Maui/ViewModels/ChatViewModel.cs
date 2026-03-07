@@ -7,9 +7,9 @@ using Trace = System.Diagnostics.Trace;
 namespace AiChatClient.Maui;
 
 public partial class ChatViewModel(
-	ChatClientService chatClientService, 
-	InventoryService inventoryService, 
-	PdfIngestionService pdfIngestionService) 
+	ChatClientService chatClientService,
+	InventoryService inventoryService,
+	PdfIngestionService pdfIngestionService)
 	: BaseViewModel
 {
 	readonly ChatClientService _chatClientService = chatClientService;
@@ -46,7 +46,19 @@ public partial class ChatViewModel(
 			var pdfContext = await _pdfIngestionService.SearchAsync(inputText, token).ConfigureAwait(false);
 
 			var prompt = pdfContext is not null
-				? $"Use the following context from ingested documents to answer the question. If the context does not contain the answer, say so.\n\nContext:\n{pdfContext}\n\nQuestion: {inputText}"
+				? $"""
+					Use the following context from ingested documents to answer the question. 
+
+					Begin your response by stating whether the information stored in the local database contains the answer.
+					
+					Context:
+					{pdfContext}
+					
+					Question:
+					{inputText}
+					"""
+
+
 				: inputText;
 
 			await foreach (var response in _chatClientService.GetStreamingResponseAsync(prompt, chatOptions, token).ConfigureAwait(false))

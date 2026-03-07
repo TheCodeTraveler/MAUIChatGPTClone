@@ -1,25 +1,25 @@
-using System.Numerics.Tensors;
 using AiChatClient.Common.Models;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.VectorData;
 using UglyToad.PdfPig;
 
 namespace AiChatClient.Common;
 
-public class PdfIngestionService(IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator)
+public class PdfIngestionService(
+	IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
+	VectorStoreCollection<string, PdfChunkRecord> vectorCollection)
 {
 	const int _chunkSize = 1000;
 	const int _chunkOverlap = 200;
-	const float _similarityThreshold = 0.7f;
 	const int _maxResults = 3;
 
 	readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator = embeddingGenerator;
-	readonly List<EmbeddingEntry> _entries = [];
-
-	public bool HasDocuments => _entries.Count > 0;
-	public IReadOnlyList<string> IngestedFileNames => [.. _entries.Select(static x => x.SourceFile).Distinct()];
+	readonly VectorStoreCollection<string, PdfChunkRecord> _vectorCollection = vectorCollection;
 
 	public async Task IngestPdfAsync(Stream pdfStream, string fileName, CancellationToken token = default)
 	{
+		await _vectorCollection.EnsureCollectionExistsAsync(token).ConfigureAwait(false);
+
 		var text = ExtractTextFromPdf(pdfStream);
 		IReadOnlyList<string> chunks = [.. ChunkText(text)];
 
@@ -30,28 +30,34 @@ public class PdfIngestionService(IEmbeddingGenerator<string, Embedding<float>> e
 		{
 			var embedding = await _embeddingGenerator.GenerateAsync(chunk, cancellationToken: token).ConfigureAwait(false);
 
-			_entries.Add(new EmbeddingEntry(chunk, embedding.Vector.ToArray(), fileName));
+			var record = new PdfChunkRecord
+			{
+				Key = Guid.NewGuid().ToString(),
+				Text = chunk,
+				SourceFile = fileName,
+				Vector = embedding.Vector,
+			};
+
+			await _vectorCollection.UpsertAsync(record, cancellationToken: token).ConfigureAwait(false);
 		}
 	}
 
 	public async Task<string?> SearchAsync(string query, CancellationToken token = default)
 	{
-		if (_entries.Count is 0)
+		var doesCollectionExist = await _vectorCollection.CollectionExistsAsync(token).ConfigureAwait(false);
+		if (!doesCollectionExist)
 			return null;
 
-		var queryEmbeddings = await _embeddingGenerator.GenerateAsync([query], cancellationToken: token).ConfigureAwait(false);
+		var queryEmbedding = await _embeddingGenerator.GenerateAsync(query, cancellationToken: token).ConfigureAwait(false);
 
-		var results = _entries
-			.Select(e => (Entry: e, Similarity: TensorPrimitives.CosineSimilarity(queryEmbeddings[0].Vector.Span, new ReadOnlySpan<float>(e.Vector))))
-			.Where(static r => r.Similarity >= _similarityThreshold)
-			.OrderByDescending(static r => r.Similarity)
-			.Take(_maxResults)
-			.ToList();
+		var results = new List<string>();
+		await foreach (var result in _vectorCollection.SearchAsync(queryEmbedding.Vector, _maxResults, cancellationToken: token).ConfigureAwait(false))
+		{
+			if (result.Score is <= 0.3f)
+				results.Add(result.Record.Text);
+		}
 
-		if (results.Count is 0)
-			return null;
-
-		return string.Join("\n\n", results.Select(static r => r.Entry.Text));
+		return results.Count > 0 ? string.Join("\n\n", results) : null;
 	}
 
 	static string ExtractTextFromPdf(Stream pdfStream)
