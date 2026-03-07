@@ -85,5 +85,8 @@
     <ItemGroup>
       <ProjectReference Include="..\AiChatClient.Common\AiChatClient.Common.csproj" />
     </ItemGroup>
-
+  
+    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+      <ProjectReference Include="..\AiChatClient.Maui.Android\AiChatClient.Maui.Android.csproj" />
+    </ItemGroup>
 </Project>

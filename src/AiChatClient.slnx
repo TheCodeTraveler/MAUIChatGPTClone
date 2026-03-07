@@ -8,6 +8,7 @@
   </Folder>
   <Project Path="AiChatClient.Common\AiChatClient.Common.csproj" />
   <Project Path="AiChatClient.Console\AiChatClient.Console.csproj" />
+  <Project Path="AiChatClient.Maui.Android/AiChatClient.Maui.Android.csproj" />
   <Project Path="AiChatClient.Maui\AiChatClient.Maui.csproj" />
   <Project Path="AiChatClient.UnitTests\AiChatClient.UnitTests.csproj" />
 </Solution>

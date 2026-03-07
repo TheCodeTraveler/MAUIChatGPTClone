@@ -93,7 +93,7 @@ static class MauiProgram
 	{
 		const string collectionName = "pdf-chunks";
 
-#if ANDROID || IOS
+#if IOS
 		// sqlite-vec does not ship Android/iOS native binaries; use in-memory store on mobile
 		var vectorStore = new InMemoryVectorStore();
 #else
