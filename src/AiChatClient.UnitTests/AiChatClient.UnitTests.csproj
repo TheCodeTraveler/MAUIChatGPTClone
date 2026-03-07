@@ -31,6 +31,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="PdfPig" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\AiChatClient.Common\AiChatClient.Common.csproj" />
     </ItemGroup>
 
