@@ -26,20 +26,17 @@ public class PdfIngestionService(
 		if (chunks.Count is 0)
 			return;
 
-		foreach (var chunk in chunks)
+		var embeddings = await _embeddingGenerator.GenerateAsync(chunks, cancellationToken: token).ConfigureAwait(false);
+
+		var records = chunks.Zip(embeddings, (chunk, embedding) => new PdfChunkRecord
 		{
-			var embedding = await _embeddingGenerator.GenerateAsync(chunk, cancellationToken: token).ConfigureAwait(false);
+			Key = Guid.NewGuid().ToString(),
+			Text = chunk,
+			SourceFile = fileName,
+			Vector = embedding.Vector,
+		}).ToList();
 
-			var record = new PdfChunkRecord
-			{
-				Key = Guid.NewGuid().ToString(),
-				Text = chunk,
-				SourceFile = fileName,
-				Vector = embedding.Vector,
-			};
-
-			await _vectorCollection.UpsertAsync(record, cancellationToken: token).ConfigureAwait(false);
-		}
+		await _vectorCollection.UpsertAsync(records, cancellationToken: token).ConfigureAwait(false);
 	}
 
 	public async Task<string?> SearchAsync(string query, CancellationToken token = default)
