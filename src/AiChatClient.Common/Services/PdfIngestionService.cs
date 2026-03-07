@@ -53,7 +53,7 @@ public class PdfIngestionService(
 		var results = new List<string>();
 		await foreach (var result in _vectorCollection.SearchAsync(queryEmbedding.Vector, _maxResults, cancellationToken: token).ConfigureAwait(false))
 		{
-			if (result.Score is >= 0.7f)
+			if (result.Score is <= 0.3f)
 				results.Add(result.Record.Text);
 		}
 

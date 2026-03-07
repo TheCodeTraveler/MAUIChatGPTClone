@@ -13,6 +13,6 @@ public class PdfChunkRecord
 	[VectorStoreData(IsFullTextIndexed = true)]
 	public string SourceFile { get; set; } = string.Empty;
 
-	[VectorStoreVector(Dimensions: 1536, DistanceFunction = DistanceFunction.CosineSimilarity)]
+	[VectorStoreVector(Dimensions: 1536, DistanceFunction = DistanceFunction.CosineDistance)]
 	public ReadOnlyMemory<float> Vector { get; set; }
 }
