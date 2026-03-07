@@ -1,9 +1,9 @@
-namespace AiChatClient.Console;
+namespace AiChatClient.Common;
 
 public static class AzureOpenAiCredentials
 {
-	public const string ApiKey = nameof(ApiKey);
 	const string _endPointUrl = nameof(_endPointUrl);
-	
-    public static Uri Endpoint { get; } = new Uri(_endPointUrl);
+
+	public const string ApiKey = nameof(ApiKey);
+	public static Uri Endpoint { get; } = new Uri(_endPointUrl);
 }
