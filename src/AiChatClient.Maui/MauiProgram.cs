@@ -92,6 +92,8 @@ static class MauiProgram
 	{
 		const string collectionName = "pdf-chunks";
 
+		SQLitePCL.Batteries_V2.Init();
+
 		var dbPath = Path.Combine(FileSystem.AppDataDirectory, "vectorstore.db");
 		var vectorStore = new SqliteVectorStore($"Data Source={dbPath}");
 
