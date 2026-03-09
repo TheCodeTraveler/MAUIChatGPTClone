@@ -16,12 +16,19 @@ public sealed class ChatClientService(IChatClient client) : IDisposable
 
 		try
 		{
+			token.ThrowIfCancellationRequested();
+
+			_conversationHistory.AddRange(messages);
 			await foreach (var response in _client.GetStreamingResponseAsync(_conversationHistory, options, token).ConfigureAwait(false))
 			{
 				yield return response;
 			}
 
-			_conversationHistory.AddRange(messages);
+			if(token.IsCancellationRequested)
+			{
+				_conversationHistory.RemoveRange(_conversationHistory.Count - messages.Count(), messages.Count());
+				token.ThrowIfCancellationRequested();
+			}
 		}
 		finally
 		{
