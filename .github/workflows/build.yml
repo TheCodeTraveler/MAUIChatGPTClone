@@ -37,5 +37,11 @@ jobs:
     - name: Display .NET Info
       run: 'dotnet --info'
 
-    - name: Build MacCatalyst
-      run: dotnet build "./src/" -f net10.0-maccatalyst
+    - name: Build Unit Tests
+      run: dotnet build "./src/AiChatClient.UnitTests" -c Release
+
+    - name: Build Console App
+      run: dotnet build "./src/AiChatClient.Console" -c Release
+
+    - name: Build MacCatalyst MAUI App
+      run: dotnet build "./src/AiChatClient.Maui" -f net10.0-maccatalyst
