@@ -50,6 +50,7 @@ static class MauiProgram
 		builder.Services.AddSingleton<ChatClientService>();
 		builder.Services.AddSingleton<PdfIngestionService>();
 		builder.Services.AddSingleton<IFilePicker>(static _ => FilePicker.Default);
+		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
 		builder.Services.AddChatClient(CreateChatClient());
 		builder.Services.AddEmbeddingGenerator(CreateEmbeddingGenerator());

@@ -99,7 +99,7 @@ public class InventoryTests : BaseTest
 		// Assert
 		Assert.That(coherenceResultMetric.Value, Is.GreaterThanOrEqualTo(4));
 	}
-	
+
 	[Test]
 	public async Task FibonacciCompletenessEvaluator()
 	{
@@ -112,14 +112,14 @@ public class InventoryTests : BaseTest
 		var completenessEvaluator = new CompletenessEvaluator();
 		var completenessEvaluatorContext = new CompletenessEvaluatorContext(
 			"The first 10 numbers of the Fibonacci Sequence are 0, 1, 1, 2, 3, 5, 8, 13, 21, 34");
-		
+
 		var response = await ChatClient.GetResponseAsync(chatMessages);
 
 		var completenessResult = await completenessEvaluator.EvaluateAsync(
 			chatMessages, response, new ChatConfiguration(ChatClient), [completenessEvaluatorContext]);
-		
+
 		var completenessResultMetric = completenessResult.Get<NumericMetric>(CompletenessEvaluator.CompletenessMetricName);
-		
+
 		Assert.That(completenessResultMetric.Value, Is.GreaterThanOrEqualTo(4));
 	}
 }

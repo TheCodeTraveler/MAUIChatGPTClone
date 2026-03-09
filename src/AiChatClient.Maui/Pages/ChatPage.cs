@@ -17,6 +17,7 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 		Content = new Grid
 		{
 			RowSpacing = 12,
+			ColumnSpacing = 8,
 
 			RowDefinitions = Rows.Define(
 				(Row.OutputText, GridLength.Star),
@@ -24,20 +25,25 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 				(Row.Button, 40),
 				(Row.Indicator, 30)),
 
+			ColumnDefinitions = Columns.Define(
+				(Col.Input, GridLength.Star),
+				(Col.ClearButton, GridLength.Auto)),
+
 			Children =
 			{
-				new ScrollView
+				new CollectionView
 				{
-					Content = new Label()
-						.Top().FillHorizontal()
-						.TextTop().TextJustify()
-						.Bind(Label.TextProperty,
-							getter: static (ChatViewModel vm) => vm.OutputText),
-				}.Row(Row.OutputText),
+					ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical) { ItemSpacing = 8 },
+					ItemsUpdatingScrollMode = ItemsUpdatingScrollMode.KeepLastItemInView,
+					ItemTemplate = new ChatDataTemplateSelector()
+				}
+				.Row(Row.OutputText).ColumnSpan(2)
+				.Bind(ItemsView.ItemsSourceProperty,
+					getter: static (ChatViewModel vm) => vm.ConversationHistory),
 
 				new Entry { ReturnType = ReturnType.Go }
 					.Assign(out Entry inputEntry)
-					.Row(Row.InputText)
+					.Row(Row.InputText).Column(Col.Input)
 					.Placeholder("Ask Anything")
 					.FillHorizontal().Bottom()
 					.Behaviors(new UserStoppedTypingBehavior
@@ -52,26 +58,40 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 						getter: static (Entry inputEntry) => inputEntry.BindingContext,
 						mode: BindingMode.OneWay,
 						source: inputEntry))
-					.Bind(Entry.TextProperty,
+					 .Bind(Entry.TextProperty,
 						getter: static (ChatViewModel vm) => vm.InputText,
 						setter: static (vm, text) => vm.InputText = text ?? string.Empty)
-					.Bind(Entry.ReturnCommandProperty,
+					 .Bind(Entry.ReturnCommandProperty,
 						getter: static (ChatViewModel vm) => vm.SubmitInputTextCommand,
 						mode: BindingMode.OneTime),
 
-				new Button { BorderColor = Colors.Gray, BorderWidth = 2 }
-					.Row(Row.Button)
-					.Text("Go")
+				new ImageButton { Source = "trash_can.png" }
+					.BackgroundColor(Colors.PaleVioletRed)
+					.Row(Row.InputText).Column(Col.ClearButton)
 					.Center()
+					.Invoke(button => button.Clicked += OnClearConversationHistoryButtonClicked)
+					.Bind(ImageButton.HeightRequestProperty,
+						getter: static (Entry entry) => entry.Height,
+						convert: static (double entryHeight) => entryHeight > 0 ? entryHeight * 0.95 : -1,
+						source: inputEntry)
+					.Bind(ImageButton.MarginProperty,
+						getter: static (Entry entry) => entry.Height,
+						convert: static (double entryHeight) => entryHeight > 0 ? new Thickness(0, 8, 0, 0) : ImageButton.MarginProperty.DefaultValue,
+						source: inputEntry)
+					.Bind(IsEnabledProperty,
+						getter: static (ChatViewModel vm) => vm.CanSubmitInputTextExecute),
+
+				new Button { BorderColor = Colors.Gray, BorderWidth = 2 }
+					.Row(Row.Button).ColumnSpan(2)
+					.Text("Go")
+					.CenterVertical().FillHorizontal()
+					.Margin(0)
 					.Bind(Button.CommandProperty,
 						getter: static (ChatViewModel vm) => vm.SubmitInputTextCommand,
-						mode: BindingMode.OneTime)
-					.Bind(WidthRequestProperty,
-						getter: static inputEntry => inputEntry.Width,
-						source: inputEntry),
+						mode: BindingMode.OneTime),
 
 				new ActivityIndicator()
-					.Row(Row.Indicator)
+					.Row(Row.Indicator).ColumnSpan(2)
 					.Bind(IsEnabledProperty,
 						getter: static (ChatViewModel vm) => vm.CanSubmitInputTextExecute,
 						convert: static (bool canSubmitInputTextExecute) => !canSubmitInputTextExecute)
@@ -87,6 +107,20 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 
 	public static string Route { get; } = $"/{nameof(ChatPage)}";
 
+	async void OnClearConversationHistoryButtonClicked(object? sender, EventArgs e)
+	{
+		var shouldDelete = await DisplayAlertAsync(
+			"Start New Conversation",
+			"Would you like to delete your conversation history and start over? The conversation cannot be recovered once deleted.",
+			"Delete",
+			"Cancel");
+
+		if (shouldDelete)
+		{
+			await BindingContext.ClearConversationHistory(CancellationToken.None);
+		}
+	}
+
 	async void OnIngestedPdfsToolbarItemClicked(object? sender, EventArgs e) =>
 		await Shell.Current.GoToAsync(TrainedFilesPage.Route, true);
 
@@ -96,5 +130,11 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 		InputText,
 		Button,
 		Indicator
+	}
+
+	enum Col
+	{
+		Input,
+		ClearButton
 	}
 }

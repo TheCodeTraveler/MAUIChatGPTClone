@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using AiChatClient.Common;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -16,14 +17,19 @@ public partial class ChatViewModel(
 	readonly InventoryService _inventoryService = inventoryService;
 	readonly PdfIngestionService _pdfIngestionService = pdfIngestionService;
 
+	public ObservableCollection<ChatModel> ConversationHistory { get; } = [];
+
 	[ObservableProperty]
 	public partial string InputText { get; set; } = string.Empty;
 
 	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(SubmitInputTextCommand))]
 	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
 
-	[ObservableProperty]
-	public partial string OutputText { get; private set; } = string.Empty;
+	public async Task ClearConversationHistory(CancellationToken token)
+	{
+		await _chatClientService.ClearConversationHistory(token);
+		ConversationHistory.Clear();
+	}
 
 	[RelayCommand(IncludeCancelCommand = true, AllowConcurrentExecutions = false, CanExecute = nameof(CanSubmitInputTextExecute))]
 	async Task SubmitInputText(CancellationToken token)
@@ -31,7 +37,12 @@ public partial class ChatViewModel(
 		var inputText = InputText;
 
 		CanSubmitInputTextExecute = false;
-		OutputText = string.Empty;
+
+		ConversationHistory.Add(new ChatModel(inputText, ChatRole.User));
+		InputText = string.Empty;
+
+		var assistantBubble = new ChatModel(string.Empty, ChatRole.Assistant);
+		ConversationHistory.Add(assistantBubble);
 
 		var chatOptions = new ChatOptions
 		{
@@ -50,21 +61,21 @@ public partial class ChatViewModel(
 					Use the following context from ingested documents to answer the question. 
 
 					Begin your response by stating whether the information stored in the local database contains the answer.
-					
+
 					Context:
 					{pdfContext}
-					
+
 					Question:
 					{inputText}
 					"""
-
-
 				: inputText;
 
-			await foreach (var response in _chatClientService.GetStreamingResponseAsync(prompt, chatOptions, token).ConfigureAwait(false))
+			await foreach (var response in _chatClientService.GetStreamingResponseForUserAsync(prompt, chatOptions, token).ConfigureAwait(false))
 			{
-				OutputText = string.Concat(OutputText, response.Text);
+				assistantBubble.Text = string.Concat(assistantBubble.Text, response.Text);
 			}
+
+			await _chatClientService.AddAssistantResponse(assistantBubble.Text, token);
 		}
 		catch (Exception e)
 		{
@@ -72,7 +83,6 @@ public partial class ChatViewModel(
 		}
 		finally
 		{
-			InputText = string.Empty;
 			CanSubmitInputTextExecute = true;
 		}
 	}
