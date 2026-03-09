@@ -79,8 +79,7 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 						convert: static (double entryHeight) => entryHeight > 0 ? new Thickness(0, 8, 0, 0) : ImageButton.MarginProperty.DefaultValue,
 						source: inputEntry)
 					.Bind(IsEnabledProperty,
-						getter: static (ChatViewModel vm) => vm.CanSubmitInputTextExecute,
-						convert: static (bool canSubmitInputTextExecute) => !canSubmitInputTextExecute),
+						getter: static (ChatViewModel vm) => vm.CanSubmitInputTextExecute),
 
 				new Button { BorderColor = Colors.Gray, BorderWidth = 2 }
 					.Row(Row.Button).ColumnSpan(2)
