@@ -22,15 +22,17 @@ public sealed class ChatClientService(IChatClient client) : IDisposable
 			{
 				yield return response;
 			}
-
-			if(token.IsCancellationRequested)
-			{
-				_conversationHistory.RemoveRange(_conversationHistory.Count - messages.Count(), messages.Count());
-				token.ThrowIfCancellationRequested();
-			}
 		}
 		finally
 		{
+			if (token.IsCancellationRequested)
+			{
+				IReadOnlyList<ChatMessage> messagesList = [.. messages];
+
+				_conversationHistory.RemoveRange(_conversationHistory.Count - messagesList.Count, messagesList.Count);
+				token.ThrowIfCancellationRequested();
+			}
+
 			_chatHistorySemaphoreSlim.Release();
 		}
 	}
