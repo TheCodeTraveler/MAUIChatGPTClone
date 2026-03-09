@@ -12,7 +12,6 @@ class ChatDataTemplateSelector : DataTemplateSelector
 	protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
 	{
 		var chatModel = (ChatModel)item;
-		var collectionView = (CollectionView)container;
 
 		if (chatModel.Role == ChatRole.User)
 			return _userChatTemplate;
