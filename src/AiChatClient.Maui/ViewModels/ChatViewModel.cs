@@ -17,13 +17,13 @@ public partial class ChatViewModel(
 	readonly InventoryService _inventoryService = inventoryService;
 	readonly PdfIngestionService _pdfIngestionService = pdfIngestionService;
 
+	public ObservableCollection<ChatModel> ConversationHistory { get; } = [];
+
 	[ObservableProperty]
 	public partial string InputText { get; set; } = string.Empty;
 
 	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(SubmitInputTextCommand))]
 	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
-
-	public ObservableCollection<ChatModel> ConversationHistory { get; } = [];
 
 	public void ClearConversationHistory()
 	{
@@ -39,6 +39,7 @@ public partial class ChatViewModel(
 		CanSubmitInputTextExecute = false;
 
 		ConversationHistory.Add(new ChatModel(inputText, ChatRole.User));
+		InputText = string.Empty;
 
 		var assistantBubble = new ChatModel(string.Empty, ChatRole.Assistant);
 		ConversationHistory.Add(assistantBubble);
@@ -67,15 +68,12 @@ public partial class ChatViewModel(
 					Question:
 					{inputText}
 					"""
-
-
 				: inputText;
 
-			await foreach (var response in _chatClientService.GetStreamingResponseAsync(prompt, chatOptions, token).ConfigureAwait(false))
+			await foreach (var response in _chatClientService.GetStreamingResponseForUserAsync(prompt, chatOptions, token).ConfigureAwait(false))
 			{
 				assistantBubble.Text = string.Concat(assistantBubble.Text, response.Text);
 			}
-
 
 			_chatClientService.AddAssistantResponse(assistantBubble.Text);
 		}
@@ -85,7 +83,6 @@ public partial class ChatViewModel(
 		}
 		finally
 		{
-			InputText = string.Empty;
 			CanSubmitInputTextExecute = true;
 		}
 	}

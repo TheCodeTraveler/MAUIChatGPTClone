@@ -35,7 +35,6 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 			{
 				new CollectionView
 				{
-					BackgroundColor = Colors.Green,
 					ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical) { ItemSpacing = 8 },
 					ItemsUpdatingScrollMode = ItemsUpdatingScrollMode.KeepLastItemInView,
 					ItemTemplate = new ChatDataTemplateSelector()						
