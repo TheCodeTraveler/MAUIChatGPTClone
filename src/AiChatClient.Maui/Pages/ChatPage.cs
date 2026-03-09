@@ -37,7 +37,7 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 				{
 					ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical) { ItemSpacing = 8 },
 					ItemsUpdatingScrollMode = ItemsUpdatingScrollMode.KeepLastItemInView,
-					ItemTemplate = new ChatDataTemplateSelector()						
+					ItemTemplate = new ChatDataTemplateSelector()
 				}
 				.Row(Row.OutputText).ColumnSpan(2)
 				.Bind(ItemsView.ItemsSourceProperty,
@@ -60,33 +60,35 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 						getter: static (Entry inputEntry) => inputEntry.BindingContext,
 						mode: BindingMode.OneWay,
 						source: inputEntry))
-					.Bind(Entry.TextProperty,
+					 .Bind(Entry.TextProperty,
 						getter: static (ChatViewModel vm) => vm.InputText,
 						setter: static (vm, text) => vm.InputText = text ?? string.Empty)
-					.Bind(Entry.ReturnCommandProperty,
+					 .Bind(Entry.ReturnCommandProperty,
 						getter: static (ChatViewModel vm) => vm.SubmitInputTextCommand,
 						mode: BindingMode.OneTime),
 
 				new ImageButton { Source = "trash_can.png" }
+					.BackgroundColor(Colors.PaleVioletRed)
 					.Row(Row.InputText).Column(Col.ClearButton)
+					.Center()
 					.Invoke(button => button.Clicked += OnClearConversationHistoryButtonClicked)
-					.Bind(HeightRequestProperty,
+					.Bind(ImageButton.HeightRequestProperty,
 						getter: static (Entry entry) => entry.Height,
+						convert: static (double entryHeight) => entryHeight > 0 ? entryHeight * 0.95 : -1,
 						source: inputEntry)
-					.Bind(WidthRequestProperty,
+					.Bind(ImageButton.MarginProperty,
 						getter: static (Entry entry) => entry.Height,
+						convert: static (double entryHeight) => entryHeight > 0 ? new Thickness(0, 8, 0, 0) : ImageButton.MarginProperty.DefaultValue,
 						source: inputEntry),
 
 				new Button { BorderColor = Colors.Gray, BorderWidth = 2 }
 					.Row(Row.Button).ColumnSpan(2)
 					.Text("Go")
-					.Center()
+					.CenterVertical().FillHorizontal()
+					.Margin(0)
 					.Bind(Button.CommandProperty,
 						getter: static (ChatViewModel vm) => vm.SubmitInputTextCommand,
-						mode: BindingMode.OneTime)
-					.Bind(WidthRequestProperty,
-						getter: static inputEntry => inputEntry.Width,
-						source: inputEntry),
+						mode: BindingMode.OneTime),
 
 				new ActivityIndicator()
 					.Row(Row.Indicator).ColumnSpan(2)
