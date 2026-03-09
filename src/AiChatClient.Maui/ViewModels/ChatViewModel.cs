@@ -25,9 +25,9 @@ public partial class ChatViewModel(
 	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(SubmitInputTextCommand))]
 	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
 
-	public void ClearConversationHistory()
+	public async Task ClearConversationHistory(CancellationToken token)
 	{
-		_chatClientService.ClearConversationHistory();
+		await _chatClientService.ClearConversationHistory(token);
 		ConversationHistory.Clear();
 	}
 
@@ -75,7 +75,7 @@ public partial class ChatViewModel(
 				assistantBubble.Text = string.Concat(assistantBubble.Text, response.Text);
 			}
 
-			_chatClientService.AddAssistantResponse(assistantBubble.Text);
+			await _chatClientService.AddAssistantResponse(assistantBubble.Text, token);
 		}
 		catch (Exception e)
 		{

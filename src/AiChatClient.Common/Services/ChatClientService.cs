@@ -1,16 +1,32 @@
-﻿using Microsoft.Extensions.AI;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.Extensions.AI;
+using UglyToad.PdfPig.Tokens;
 
 namespace AiChatClient.Common;
 
-public class ChatClientService(IChatClient client)
+public sealed class ChatClientService(IChatClient client) : IDisposable
 {
+	readonly SemaphoreSlim _chatHistorySemaphoreSlim = new(1, 1);
 	readonly IChatClient _client = client;
 	readonly List<ChatMessage> _conversationHistory = [];
 
-	public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions options, CancellationToken token)
+	public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions options, [EnumeratorCancellation] CancellationToken token)
 	{
-		_conversationHistory.AddRange(messages);
-		return _client.GetStreamingResponseAsync(_conversationHistory, options, token);
+		await _chatHistorySemaphoreSlim.WaitAsync(token).ConfigureAwait(false);
+
+		try
+		{
+			await foreach (var response in _client.GetStreamingResponseAsync(_conversationHistory, options, token).ConfigureAwait(false))
+			{
+				yield return response;
+			}
+
+			_conversationHistory.AddRange(messages);
+		}
+		finally
+		{
+			_chatHistorySemaphoreSlim.Release();
+		}
 	}
 
 	public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseForUserAsync(string input, ChatOptions options, CancellationToken token)
@@ -18,13 +34,36 @@ public class ChatClientService(IChatClient client)
 		return GetStreamingResponseAsync([new ChatMessage(ChatRole.User, input)], options, token);
 	}
 
-	public void AddAssistantResponse(string response)
+	public async Task AddAssistantResponse(string response, CancellationToken token)
 	{
-		_conversationHistory.Add(new ChatMessage(ChatRole.Assistant, response));
+		await _chatHistorySemaphoreSlim.WaitAsync(token).ConfigureAwait(false);
+
+		try
+		{
+			_conversationHistory.Add(new ChatMessage(ChatRole.Assistant, response));
+		}
+		finally
+		{
+			_chatHistorySemaphoreSlim.Release();
+		}
 	}
 
-	public void ClearConversationHistory()
+	public async Task ClearConversationHistory(CancellationToken token)
 	{
-		_conversationHistory.Clear();
+		await _chatHistorySemaphoreSlim.WaitAsync(token).ConfigureAwait(false);
+
+		try
+		{
+			_conversationHistory.Clear();
+		}
+		finally
+		{
+			_chatHistorySemaphoreSlim.Release();
+		}
+	}
+
+	public void Dispose()
+	{
+		_chatHistorySemaphoreSlim.Dispose();
 	}
 }
