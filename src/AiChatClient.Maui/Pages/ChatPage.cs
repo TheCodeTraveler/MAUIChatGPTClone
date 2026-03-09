@@ -1,8 +1,6 @@
 using AiChatClient.Maui.Pages;
 using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Markup;
-using Microsoft.Extensions.AI;
-using Microsoft.Maui.Controls.Shapes;
 using static CommunityToolkit.Maui.Markup.GridRowsColumns;
 
 namespace AiChatClient.Maui;
