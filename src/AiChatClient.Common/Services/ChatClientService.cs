@@ -12,20 +12,23 @@ public sealed class ChatClientService(IChatClient client) : IDisposable
 	public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions options, [EnumeratorCancellation] CancellationToken token)
 	{
 		await _chatHistorySemaphoreSlim.WaitAsync(token).ConfigureAwait(false);
+		var getStreamingResponseAsyncEnumerable = _client.GetStreamingResponseAsync(_conversationHistory, options, token);
 
 		try
 		{
 			token.ThrowIfCancellationRequested();
 
 			_conversationHistory.AddRange(messages);
-			await foreach (var response in _client.GetStreamingResponseAsync(_conversationHistory, options, token).ConfigureAwait(false))
+
+			await foreach (var response in getStreamingResponseAsyncEnumerable.ConfigureAwait(false))
 			{
 				yield return response;
 			}
 		}
 		finally
 		{
-			if (token.IsCancellationRequested)
+			if (!await IsAsyncEnumeratorComplete(getStreamingResponseAsyncEnumerable, token) 
+				&& token.IsCancellationRequested)
 			{
 				IReadOnlyList<ChatMessage> messagesList = [.. messages];
 
@@ -35,6 +38,9 @@ public sealed class ChatClientService(IChatClient client) : IDisposable
 
 			_chatHistorySemaphoreSlim.Release();
 		}
+
+		static async ValueTask<bool> IsAsyncEnumeratorComplete<T>(IAsyncEnumerable<T> asyncEnumerable, CancellationToken token) =>
+			!await (asyncEnumerable.GetAsyncEnumerator(token)?.MoveNextAsync() ?? ValueTask.FromResult(false));
 	}
 
 	public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseForUserAsync(string input, ChatOptions options, CancellationToken token)
