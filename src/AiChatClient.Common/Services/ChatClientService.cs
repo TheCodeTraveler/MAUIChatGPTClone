@@ -14,7 +14,6 @@ public sealed class ChatClientService(IChatClient client) : IDisposable
 		bool didEnumerableCompleteSuccessfully = false;
 
 		await _chatHistorySemaphoreSlim.WaitAsync(token).ConfigureAwait(false);
-		var getStreamingResponseAsyncEnumerable = _client.GetStreamingResponseAsync(_conversationHistory, options, token);
 
 		try
 		{
@@ -22,7 +21,7 @@ public sealed class ChatClientService(IChatClient client) : IDisposable
 
 			_conversationHistory.AddRange(messages);
 
-			await foreach (var response in getStreamingResponseAsyncEnumerable.ConfigureAwait(false))
+			await foreach (var response in _client.GetStreamingResponseAsync(_conversationHistory, options, token).ConfigureAwait(false))
 			{
 				yield return response;
 			}
