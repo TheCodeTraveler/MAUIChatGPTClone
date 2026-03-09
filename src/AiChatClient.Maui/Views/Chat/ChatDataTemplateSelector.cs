@@ -47,7 +47,7 @@ class ChatDataTemplateSelector : DataTemplateSelector
 					mode: BindingMode.OneTime)
 				.Bind(Border.MaximumWidthRequestProperty,
 					getter: static (ChatModel b) => b.Role,
-					convert: (ChatRole role) => role == ChatRole.User ? 280 : Border.MaximumWidthRequestProperty.DefaultValue,
+					convert: static (ChatRole role) => role == ChatRole.User ? 280d : (double)Border.MaximumWidthRequestProperty.DefaultValue,
 					mode: BindingMode.OneTime)
 			}
 		};
