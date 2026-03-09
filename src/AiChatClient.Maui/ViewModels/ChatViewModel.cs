@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using AiChatClient.Common;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -22,8 +23,13 @@ public partial class ChatViewModel(
 	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(SubmitInputTextCommand))]
 	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
 
-	[ObservableProperty]
-	public partial string OutputText { get; private set; } = string.Empty;
+	public ObservableCollection<ChatModel> ConversationHistory { get; } = [];
+
+	public void ClearConversationHistory()
+	{
+		_chatClientService.ClearConversationHistory();
+		ConversationHistory.Clear();
+	}
 
 	[RelayCommand(IncludeCancelCommand = true, AllowConcurrentExecutions = false, CanExecute = nameof(CanSubmitInputTextExecute))]
 	async Task SubmitInputText(CancellationToken token)
@@ -31,7 +37,11 @@ public partial class ChatViewModel(
 		var inputText = InputText;
 
 		CanSubmitInputTextExecute = false;
-		OutputText = string.Empty;
+
+		ConversationHistory.Add(new ChatModel(inputText, ChatRole.User));
+
+		var assistantBubble = new ChatModel(string.Empty, ChatRole.Assistant);
+		ConversationHistory.Add(assistantBubble);
 
 		var chatOptions = new ChatOptions
 		{
@@ -50,10 +60,10 @@ public partial class ChatViewModel(
 					Use the following context from ingested documents to answer the question. 
 
 					Begin your response by stating whether the information stored in the local database contains the answer.
-					
+
 					Context:
 					{pdfContext}
-					
+
 					Question:
 					{inputText}
 					"""
@@ -63,8 +73,11 @@ public partial class ChatViewModel(
 
 			await foreach (var response in _chatClientService.GetStreamingResponseAsync(prompt, chatOptions, token).ConfigureAwait(false))
 			{
-				OutputText = string.Concat(OutputText, response.Text);
+				assistantBubble.Text = string.Concat(assistantBubble.Text, response.Text);
 			}
+
+
+			_chatClientService.AddAssistantResponse(assistantBubble.Text);
 		}
 		catch (Exception e)
 		{
