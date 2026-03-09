@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.Extensions.AI;
-using UglyToad.PdfPig.Tokens;
 
 namespace AiChatClient.Common;
 
