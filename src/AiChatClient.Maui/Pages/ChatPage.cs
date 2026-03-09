@@ -118,7 +118,7 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 
 		if (shouldDelete)
 		{
-			BindingContext.ClearConversationHistory();
+			await BindingContext.ClearConversationHistory(CancellationToken.None);
 		}
 	}
 
