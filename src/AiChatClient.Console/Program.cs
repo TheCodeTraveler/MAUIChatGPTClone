@@ -3,7 +3,7 @@ using AiChatClient.Console;
 using Amazon;
 using Amazon.BedrockRuntime;
 
-var chatClientService = new ChatClientService(
+using var chatClientService = new ChatClientService(
 	new AmazonBedrockRuntimeClient(AwsCredentials.AccessKeyId, AwsCredentials.SecretAccessKey, RegionEndpoint.USEast1)
 		.AsIChatClient("anthropic.claude-v2"));
 
