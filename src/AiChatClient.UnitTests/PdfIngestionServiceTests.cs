@@ -29,6 +29,7 @@ public class PdfIngestionServiceTests : BaseTest
 		// Assert
 		var result = await service.SearchAsync(pdfText);
 		Assert.That(result, Is.Not.Null);
+		Assert.That(result, Does.Contain(pdfText));
 	}
 
 	[Test]
