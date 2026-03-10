@@ -8,6 +8,7 @@ namespace AiChatClient.UnitTests;
 public abstract class BaseTest
 {
 	protected IChatClient ChatClient { get; } = CreateChatClient();
+	protected IEmbeddingGenerator<string, Embedding<float>> EmbeddingGenerator { get; } = CreateEmbeddingGenerator();
 
 	[SetUp]
 	public virtual void Setup()
@@ -19,6 +20,7 @@ public abstract class BaseTest
 	public virtual void TearDown()
 	{
 		ChatClient.Dispose();
+		EmbeddingGenerator.Dispose();
 	}
 
 	static IChatClient CreateChatClient()
@@ -33,5 +35,15 @@ public abstract class BaseTest
 		return new ChatClientBuilder(azureOpenAiClient)
 			.UseFunctionInvocation()
 			.Build();
+	}
+
+	static IEmbeddingGenerator<string, Embedding<float>> CreateEmbeddingGenerator()
+	{
+		const string embeddingModelId = "text-embedding-3-small";
+		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
+
+		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
+			.GetEmbeddingClient(embeddingModelId)
+			.AsIEmbeddingGenerator();
 	}
 }
