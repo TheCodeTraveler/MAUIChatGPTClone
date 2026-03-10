@@ -7,8 +7,11 @@ namespace AiChatClient.UnitTests;
 
 public abstract class BaseTest
 {
-	protected IChatClient ChatClient { get; } = CreateChatClient();
-	protected IEmbeddingGenerator<string, Embedding<float>> EmbeddingGenerator { get; } = CreateEmbeddingGenerator();
+	readonly Lazy<IChatClient> _chatClientHolder = new(CreateChatClient());
+	readonly Lazy<IEmbeddingGenerator<string, Embedding<float>>> _embeddingGeneratorHolder = new(CreateEmbeddingGenerator());
+
+	protected IChatClient ChatClient => _chatClientHolder.Value;
+	protected IEmbeddingGenerator<string, Embedding<float>> EmbeddingGenerator => _embeddingGeneratorHolder.Value;
 
 	[SetUp]
 	public virtual void Setup()
@@ -19,8 +22,11 @@ public abstract class BaseTest
 	[OneTimeTearDown]
 	public virtual void TearDown()
 	{
-		ChatClient.Dispose();
-		EmbeddingGenerator.Dispose();
+		if(_chatClientHolder.IsValueCreated)
+			ChatClient.Dispose();
+		
+		if(_embeddingGeneratorHolder.IsValueCreated)
+			EmbeddingGenerator.Dispose();
 	}
 
 	static IChatClient CreateChatClient()
