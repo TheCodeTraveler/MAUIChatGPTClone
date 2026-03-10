@@ -4,6 +4,8 @@
         <TargetFrameworks>$(NetVersion)-android;$(NetVersion)-ios;$(NetVersion)-maccatalyst</TargetFrameworks>
         <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(NetVersion)-windows10.0.19041.0</TargetFrameworks>
 
+        <NoWarn>MEAI001</NoWarn>
+
         <OutputType>Exe</OutputType>
         <RootNamespace>AiChatClient.Maui</RootNamespace>
         <UseMaui>true</UseMaui>

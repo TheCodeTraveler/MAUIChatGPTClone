@@ -10,12 +10,14 @@ namespace AiChatClient.Maui;
 public partial class ChatViewModel(
 	ChatClientService chatClientService,
 	InventoryService inventoryService,
-	PdfIngestionService pdfIngestionService)
+	PdfIngestionService pdfIngestionService,
+	ImageGenerationService imageGenerationService)
 	: BaseViewModel
 {
 	readonly ChatClientService _chatClientService = chatClientService;
 	readonly InventoryService _inventoryService = inventoryService;
 	readonly PdfIngestionService _pdfIngestionService = pdfIngestionService;
+	readonly ImageGenerationService _imageGenerationService = imageGenerationService;
 
 	public ObservableCollection<ChatModel> ConversationHistory { get; } = [];
 
@@ -44,38 +46,47 @@ public partial class ChatViewModel(
 		var assistantBubble = new ChatModel(string.Empty, ChatRole.Assistant);
 		ConversationHistory.Add(assistantBubble);
 
-		var chatOptions = new ChatOptions
-		{
-			Tools =
-			[
-				AIFunctionFactory.Create(_inventoryService.GetWines)
-			],
-		};
-
 		try
 		{
-			var pdfContext = await _pdfIngestionService.SearchAsync(inputText, token).ConfigureAwait(false);
-
-			var prompt = pdfContext is not null
-				? $"""
-					Use the following context from ingested documents to answer the question. 
-
-					Begin your response by stating whether the information stored in the local database contains the answer.
-
-					Context:
-					{pdfContext}
-
-					Question:
-					{inputText}
-					"""
-				: inputText;
-
-			await foreach (var response in _chatClientService.GetStreamingResponseForUserAsync(prompt, chatOptions, token).ConfigureAwait(false))
+			if (ImageGenerationService.IsImageGenerationRequest(inputText))
 			{
-				assistantBubble.Text = string.Concat(assistantBubble.Text, response.Text);
+				var imageUri = await _imageGenerationService.GenerateImageAsync(inputText, token).ConfigureAwait(false);
+				assistantBubble.ImageUri = imageUri;
+				assistantBubble.Text = "Here's the generated image:";
 			}
+			else
+			{
+				var chatOptions = new ChatOptions
+				{
+					Tools =
+					[
+						AIFunctionFactory.Create(_inventoryService.GetWines)
+					],
+				};
 
-			await _chatClientService.AddAssistantResponse(assistantBubble.Text, token);
+				var pdfContext = await _pdfIngestionService.SearchAsync(inputText, token).ConfigureAwait(false);
+
+				var prompt = pdfContext is not null
+					? $"""
+						Use the following context from ingested documents to answer the question. 
+
+						Begin your response by stating whether the information stored in the local database contains the answer.
+
+						Context:
+						{pdfContext}
+
+						Question:
+						{inputText}
+						"""
+					: inputText;
+
+				await foreach (var response in _chatClientService.GetStreamingResponseForUserAsync(prompt, chatOptions, token).ConfigureAwait(false))
+				{
+					assistantBubble.Text = string.Concat(assistantBubble.Text, response.Text);
+				}
+
+				await _chatClientService.AddAssistantResponse(assistantBubble.Text, token);
+			}
 		}
 		catch (Exception e)
 		{

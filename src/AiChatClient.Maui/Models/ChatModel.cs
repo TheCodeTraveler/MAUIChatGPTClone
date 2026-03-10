@@ -8,5 +8,8 @@ public partial class ChatModel(string text, ChatRole role) : ObservableObject
 	[ObservableProperty]
 	public partial string Text { get; set; } = text;
 
+	[ObservableProperty]
+	public partial Uri? ImageUri { get; set; }
+
 	public ChatRole Role { get; } = role;
 }

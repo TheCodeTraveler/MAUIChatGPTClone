@@ -23,32 +23,53 @@ class ChatDataTemplateSelector : DataTemplateSelector
 
 	class ChatDataTemplate(ChatRole role) : DataTemplate(() => CreateDataTemplate(role))
 	{
-		static Grid CreateDataTemplate(ChatRole role) => new()
+		static Grid CreateDataTemplate(ChatRole role)
 		{
-			Children =
-			{
-				new Border
-				{
-					StrokeThickness = 0,
-					StrokeShape = new RoundRectangle { CornerRadius = 16 },
+			var label = new Label { LineBreakMode = LineBreakMode.WordWrap }
+				.TextColor(role == ChatRole.User ? Colors.White : Color.FromArgb("#1C1C1E"))
+				.Bind(Label.TextProperty,
+					getter: static (ChatModel b) => b.Text);
 
-					Content = new Label { LineBreakMode = LineBreakMode.WordWrap }
-								.TextColor(role == ChatRole.User ? Colors.White : Color.FromArgb("#1C1C1E"))
-								.Bind(Label.TextProperty,
-									getter: static (ChatModel b) => b.Text)
+			return new Grid
+			{
+				Children =
+				{
+					new Border
+					{
+						StrokeThickness = 0,
+						StrokeShape = new RoundRectangle { CornerRadius = 16 },
+
+						Content = role == ChatRole.Assistant
+									? new VerticalStackLayout
+									{
+										Spacing = 8,
+										Children =
+										{
+											label,
+											new Image { Aspect = Aspect.AspectFit, HeightRequest = 300 }
+												.Bind(Image.SourceProperty,
+													getter: static (ChatModel m) => m.ImageUri,
+													convert: static (Uri? uri) => uri is not null ? ImageSource.FromUri(uri) : null)
+												.Bind(VisualElement.IsVisibleProperty,
+													getter: static (ChatModel m) => m.ImageUri,
+													convert: static (Uri? uri) => uri is not null)
+										}
+									}
+									: label
+					}
+					.BackgroundColor(role == ChatRole.User ? Color.FromArgb("#007AFF") : Color.FromArgb("#E5E5EA"))
+					.Margin(role == ChatRole.User ? new Thickness(60, 0, 0, 0) : new Thickness(0, 0, 150, 0))
+					.Padding(12, 8)
+					.Bind(Border.HorizontalOptionsProperty,
+						getter: static (ChatModel b) => b.Role,
+						convert: static (ChatRole role) => role == ChatRole.User ? LayoutOptions.End : LayoutOptions.Start,
+						mode: BindingMode.OneTime)
+					.Bind(Border.MaximumWidthRequestProperty,
+						getter: static (ChatModel b) => b.Role,
+						convert: static (ChatRole role) => role == ChatRole.User ? 280d : (double)Border.MaximumWidthRequestProperty.DefaultValue,
+						mode: BindingMode.OneTime)
 				}
-				.BackgroundColor(role == ChatRole.User ? Color.FromArgb("#007AFF") : Color.FromArgb("#E5E5EA"))
-				.Margin(role == ChatRole.User ? new Thickness(60, 0, 0, 0) : new Thickness(0, 0, 150, 0))
-				.Padding(12, 8)
-				.Bind(Border.HorizontalOptionsProperty,
-					getter: static (ChatModel b) => b.Role,
-					convert: static (ChatRole role) => role == ChatRole.User ? LayoutOptions.End : LayoutOptions.Start,
-					mode: BindingMode.OneTime)
-				.Bind(Border.MaximumWidthRequestProperty,
-					getter: static (ChatModel b) => b.Role,
-					convert: static (ChatRole role) => role == ChatRole.User ? 280d : (double)Border.MaximumWidthRequestProperty.DefaultValue,
-					mode: BindingMode.OneTime)
-			}
-		};
+			};
+		}
 	}
 }

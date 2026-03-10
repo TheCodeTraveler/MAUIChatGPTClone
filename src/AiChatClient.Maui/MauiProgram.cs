@@ -49,12 +49,14 @@ static class MauiProgram
 		builder.Services.AddSingleton<InventoryService>();
 		builder.Services.AddSingleton<ChatClientService>();
 		builder.Services.AddSingleton<PdfIngestionService>();
+		builder.Services.AddSingleton<ImageGenerationService>();
 		builder.Services.AddSingleton<IFilePicker>(static _ => FilePicker.Default);
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
 		builder.Services.AddChatClient(CreateChatClient());
 		builder.Services.AddEmbeddingGenerator(CreateEmbeddingGenerator());
 		builder.Services.AddSingleton(CreateVectorCollection());
+		builder.Services.AddSingleton(CreateImageGenerator());
 
 		return builder.Build();
 	}
@@ -88,6 +90,16 @@ static class MauiProgram
 		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
 			.GetEmbeddingClient(embeddingModelId)
 			.AsIEmbeddingGenerator();
+	}
+
+	static IImageGenerator CreateImageGenerator()
+	{
+		const string imageModelId = "FLUX.2-pro";
+		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
+
+		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
+			.GetImageClient(imageModelId)
+			.AsIImageGenerator();
 	}
 
 	static VectorStoreCollection<string, PdfChunkRecord> CreateVectorCollection()
