@@ -52,9 +52,9 @@ static class MauiProgram
 		builder.Services.AddSingleton<IFilePicker>(static _ => FilePicker.Default);
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
-		builder.Services.AddChatClient(CreateChatClient());
-		builder.Services.AddEmbeddingGenerator(CreateEmbeddingGenerator());
-		builder.Services.AddSingleton(CreateVectorCollection());
+		builder.Services.AddChatClient(static _ => CreateChatClient());
+		builder.Services.AddEmbeddingGenerator(static _ => CreateEmbeddingGenerator());
+		builder.Services.AddSingleton(static _ => CreateVectorCollection());
 
 		return builder.Build();
 	}
