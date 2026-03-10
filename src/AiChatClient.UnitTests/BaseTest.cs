@@ -22,10 +22,10 @@ public abstract class BaseTest
 	[OneTimeTearDown]
 	public virtual void TearDown()
 	{
-		if(_chatClientHolder.IsValueCreated)
+		if (_chatClientHolder.IsValueCreated)
 			ChatClient.Dispose();
-		
-		if(_embeddingGeneratorHolder.IsValueCreated)
+
+		if (_embeddingGeneratorHolder.IsValueCreated)
 			EmbeddingGenerator.Dispose();
 	}
 
