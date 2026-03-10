@@ -7,7 +7,11 @@ namespace AiChatClient.UnitTests;
 
 public abstract class BaseTest
 {
-	protected IChatClient ChatClient { get; } = CreateChatClient();
+	readonly Lazy<IChatClient> _chatClientHolder = new(CreateChatClient);
+	readonly Lazy<IEmbeddingGenerator<string, Embedding<float>>> _embeddingGeneratorHolder = new(CreateEmbeddingGenerator);
+
+	protected IChatClient ChatClient => _chatClientHolder.Value;
+	protected IEmbeddingGenerator<string, Embedding<float>> EmbeddingGenerator => _embeddingGeneratorHolder.Value;
 
 	[SetUp]
 	public virtual void Setup()
@@ -18,7 +22,11 @@ public abstract class BaseTest
 	[OneTimeTearDown]
 	public virtual void TearDown()
 	{
-		ChatClient.Dispose();
+		if(_chatClientHolder.IsValueCreated)
+			ChatClient.Dispose();
+		
+		if(_embeddingGeneratorHolder.IsValueCreated)
+			EmbeddingGenerator.Dispose();
 	}
 
 	static IChatClient CreateChatClient()
@@ -33,5 +41,15 @@ public abstract class BaseTest
 		return new ChatClientBuilder(azureOpenAiClient)
 			.UseFunctionInvocation()
 			.Build();
+	}
+
+	static IEmbeddingGenerator<string, Embedding<float>> CreateEmbeddingGenerator()
+	{
+		const string embeddingModelId = "text-embedding-3-small";
+		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
+
+		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
+			.GetEmbeddingClient(embeddingModelId)
+			.AsIEmbeddingGenerator();
 	}
 }
