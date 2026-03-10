@@ -7,8 +7,8 @@ namespace AiChatClient.UnitTests;
 
 public abstract class BaseTest
 {
-	readonly Lazy<IChatClient> _chatClientHolder = new(CreateChatClient());
-	readonly Lazy<IEmbeddingGenerator<string, Embedding<float>>> _embeddingGeneratorHolder = new(CreateEmbeddingGenerator());
+	readonly Lazy<IChatClient> _chatClientHolder = new(CreateChatClient);
+	readonly Lazy<IEmbeddingGenerator<string, Embedding<float>>> _embeddingGeneratorHolder = new(CreateEmbeddingGenerator);
 
 	protected IChatClient ChatClient => _chatClientHolder.Value;
 	protected IEmbeddingGenerator<string, Embedding<float>> EmbeddingGenerator => _embeddingGeneratorHolder.Value;
