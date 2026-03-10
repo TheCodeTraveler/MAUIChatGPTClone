@@ -90,7 +90,7 @@ public partial class ChatViewModel(
 		}
 		catch (Exception e)
 		{
-			Trace.TraceError(e.ToString());
+			assistantBubble.Text = $"An error has occurred:\n{e}";
 		}
 		finally
 		{
