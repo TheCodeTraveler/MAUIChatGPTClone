@@ -56,7 +56,7 @@ static class MauiProgram
 		builder.Services.AddChatClient(CreateChatClient());
 		builder.Services.AddEmbeddingGenerator(CreateEmbeddingGenerator());
 		builder.Services.AddSingleton(CreateVectorCollection());
-		builder.Services.AddSingleton(CreateImageGenerator());
+		builder.Services.AddImageGenerator(static _ => CreateImageGenerator());
 
 		return builder.Build();
 	}
