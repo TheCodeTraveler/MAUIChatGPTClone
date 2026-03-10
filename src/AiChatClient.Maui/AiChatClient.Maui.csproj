@@ -79,6 +79,7 @@
         <PackageReference Include="Microsoft.Maui.Controls" />
         <PackageReference Include="Microsoft.SemanticKernel.Connectors.InMemory" />
         <PackageReference Include="Microsoft.SemanticKernel.Connectors.SqliteVec" />
+        <PackageReference Include="OllamaSharp" />
         <PackageReference Include="SQLitePCLRaw.bundle_green" />
     </ItemGroup>
 

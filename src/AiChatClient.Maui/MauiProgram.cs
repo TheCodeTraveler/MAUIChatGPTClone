@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.VectorData;
 using Microsoft.SemanticKernel.Connectors.InMemory;
 using Microsoft.SemanticKernel.Connectors.SqliteVec;
+using OllamaSharp;
 
 namespace AiChatClient.Maui;
 
@@ -52,8 +53,8 @@ static class MauiProgram
 		builder.Services.AddSingleton<IFilePicker>(static _ => FilePicker.Default);
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
-		builder.Services.AddChatClient(static _ => CreateChatClient());
-		builder.Services.AddEmbeddingGenerator(static _ => CreateEmbeddingGenerator());
+		builder.Services.AddChatClient(static _ => CreateOllamaChatClient());
+		builder.Services.AddEmbeddingGenerator(static _ => CreateOllamaEmbeddingGenerator());
 		builder.Services.AddSingleton(static _ => CreateVectorCollection());
 
 		return builder.Build();
@@ -66,7 +67,7 @@ static class MauiProgram
 		return services.AddTransientWithShellRoute<TView, TViewModel>(TView.Route);
 	}
 
-	static IChatClient CreateChatClient()
+	static IChatClient CreateAzureOpenAiChatClient()
 	{
 		const string modelId = "gpt-4.1";
 		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
@@ -80,7 +81,18 @@ static class MauiProgram
 			.Build();
 	}
 
-	static IEmbeddingGenerator<string, Embedding<float>> CreateEmbeddingGenerator()
+	static IChatClient CreateOllamaChatClient()
+	{
+		const string modelId = "qwen3.5";
+
+		var ollamaClient = new OllamaApiClient(OllamaCredentials.EndPointUrl, modelId);
+
+		return new ChatClientBuilder(ollamaClient)
+			.UseFunctionInvocation()
+			.Build();
+	}
+
+	static IEmbeddingGenerator<string, Embedding<float>> CreateAzureOpenAiEmbeddingGenerator()
 	{
 		const string embeddingModelId = "text-embedding-3-small";
 		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
@@ -88,6 +100,13 @@ static class MauiProgram
 		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
 			.GetEmbeddingClient(embeddingModelId)
 			.AsIEmbeddingGenerator();
+	}
+
+	static IEmbeddingGenerator<string, Embedding<float>> CreateOllamaEmbeddingGenerator()
+	{
+		const string embeddingModelId = "qwen3-embedding";
+
+		return new OllamaApiClient(OllamaCredentials.EndPointUrl, embeddingModelId);
 	}
 
 	static VectorStoreCollection<string, PdfChunkRecord> CreateVectorCollection()
