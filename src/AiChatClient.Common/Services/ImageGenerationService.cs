@@ -1,3 +1,4 @@
+using System.Buffers;
 using Microsoft.Extensions.AI;
 
 namespace AiChatClient.Common;
@@ -45,8 +46,29 @@ public sealed class ImageGenerationService(IImageGenerator imageGenerator)
 
 		var firstImage = response.Contents.OfType<DataContent>().FirstOrDefault();
 
-		return firstImage?.Base64Data is not null 
-				? new MemoryStream(Convert.FromBase64String(firstImage.Base64Data.ToString()))
-				: null;
+		if (firstImage is null)
+			return null;
+
+		// The buffer size is 3 bytes of binary data for every 4 chars of Base64
+		var maxDecodedLength = (int)Math.Ceiling(firstImage.Base64Data.Length * 3.0 / 4);
+		var rentedByteArray = ArrayPool<byte>.Shared.Rent(maxDecodedLength);
+		
+		try
+		{
+			if (Convert.TryFromBase64Chars(firstImage.Base64Data.Span, rentedByteArray, out var bytesWritten))
+			{
+				var finalBytes = new byte[bytesWritten];
+				Array.Copy(rentedByteArray, 0, finalBytes, 0, bytesWritten);
+				return new MemoryStream(finalBytes);
+			}
+			else
+			{
+				return null;
+			}
+		}
+		finally
+		{
+			ArrayPool<byte>.Shared.Return(rentedByteArray);
+		}
 	}
 }
