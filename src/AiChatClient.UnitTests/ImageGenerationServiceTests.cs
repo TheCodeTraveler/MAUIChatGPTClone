@@ -50,7 +50,7 @@ public class ImageGenerationServiceTests : BaseTest
 		var service = new ImageGenerationService(ImageGenerator);
 
 		// Act
-		var result = await service.GenerateImageAsync("A simple red circle on a white background", CancellationToken.None);
+		await using var result = await service.GenerateImageAsync("A simple red circle on a white background", CancellationToken.None);
 
 		// Assert
 		Assert.That(result, Is.Not.Null);
