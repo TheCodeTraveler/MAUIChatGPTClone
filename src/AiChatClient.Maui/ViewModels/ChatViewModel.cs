@@ -29,8 +29,20 @@ public partial class ChatViewModel(
 
 	public async Task ClearConversationHistory(CancellationToken token)
 	{
-		await _chatClientService.ClearConversationHistory(token);
-		ConversationHistory.Clear();
+		CanSubmitInputTextExecute = false;
+
+		try
+		{
+			await _chatClientService.ClearConversationHistory(token);
+
+			await Task.WhenAll(ConversationHistory.Select(static async x => await x.DisposeAsync()));
+
+			ConversationHistory.Clear();
+		}
+		finally
+		{
+			CanSubmitInputTextExecute = true;
+		}
 	}
 
 	[RelayCommand(IncludeCancelCommand = true, AllowConcurrentExecutions = false, CanExecute = nameof(CanSubmitInputTextExecute))]
