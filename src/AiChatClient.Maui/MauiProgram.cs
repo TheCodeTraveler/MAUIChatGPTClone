@@ -55,9 +55,9 @@ static class MauiProgram
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
 		builder.Services.AddSingleton(static _ => CreateVectorCollection());
-		builder.Services.AddChatClient(static _ => CreateAzureOpenAiImageGenerator());
+		builder.Services.AddChatClient(static _ => CreateAzureOpenAiChatClient());
 		builder.Services.AddImageGenerator(static _ => CreateAzureOpenAiImageGenerator());
-		builder.Services.AddEmbeddingGenerator(static _ => CreateAzureOpenAiImageGenerator());
+		builder.Services.AddEmbeddingGenerator(static _ => CreateAzureOpenAiEmbeddingGenerator());
 
 		return builder.Build();
 	}
@@ -106,7 +106,7 @@ static class MauiProgram
 
 	static IImageGenerator CreateAzureOpenAiImageGenerator()
 	{
-		const string imageModelId = "FLUX.2-pro";
+		const string imageModelId = "gpt-image-1.5";
 		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
 
 		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
