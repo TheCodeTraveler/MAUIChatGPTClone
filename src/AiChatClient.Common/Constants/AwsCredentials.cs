@@ -1,4 +1,4 @@
-﻿namespace AiChatClient.Console;
+﻿namespace AiChatClient.Common;
 
 public static class AwsCredentials
 {

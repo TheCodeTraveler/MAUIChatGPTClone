@@ -1,5 +1,4 @@
 ﻿using AiChatClient.Common;
-using AiChatClient.Console;
 using Amazon;
 using Amazon.BedrockRuntime;
 
