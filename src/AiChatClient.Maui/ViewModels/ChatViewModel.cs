@@ -50,6 +50,8 @@ public partial class ChatViewModel(
 		{
 			if (ImageGenerationService.IsImageGenerationRequest(inputText))
 			{
+				await _chatClientService.AddToConversationHistory(new ChatMessage(ChatRole.User, inputText), token).ConfigureAwait(false);
+
 				var imageStream = await _imageGenerationService.GenerateImageAsync(inputText, token).ConfigureAwait(false);
 				assistantBubble.ImageStream = imageStream;
 				assistantBubble.Text = "Here's the generated image:";
@@ -84,9 +86,9 @@ public partial class ChatViewModel(
 				{
 					assistantBubble.Text = string.Concat(assistantBubble.Text, response.Text);
 				}
-
-				await _chatClientService.AddAssistantResponse(assistantBubble.Text, token);
 			}
+
+			await _chatClientService.AddToConversationHistory(new ChatMessage(ChatRole.Assistant, assistantBubble.Text), token).ConfigureAwait(false);
 		}
 		catch (Exception e)
 		{

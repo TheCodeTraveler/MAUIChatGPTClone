@@ -1,7 +1,4 @@
-using System.Buffers.Text;
-using System.Net.NetworkInformation;
 using Microsoft.Extensions.AI;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace AiChatClient.Common;
 
