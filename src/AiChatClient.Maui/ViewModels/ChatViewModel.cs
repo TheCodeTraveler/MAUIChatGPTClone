@@ -50,8 +50,8 @@ public partial class ChatViewModel(
 		{
 			if (ImageGenerationService.IsImageGenerationRequest(inputText))
 			{
-				var imageUri = await _imageGenerationService.GenerateImageAsync(inputText, token).ConfigureAwait(false);
-				assistantBubble.ImageUri = imageUri;
+				var imageStream = await _imageGenerationService.GenerateImageAsync(inputText, token).ConfigureAwait(false);
+				assistantBubble.ImageStream = imageStream;
 				assistantBubble.Text = "Here's the generated image:";
 			}
 			else

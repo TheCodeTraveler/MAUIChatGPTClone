@@ -48,11 +48,11 @@ class ChatDataTemplateSelector : DataTemplateSelector
 											label,
 											new Image { Aspect = Aspect.AspectFit, HeightRequest = 300 }
 												.Bind(Image.SourceProperty,
-													getter: static (ChatModel m) => m.ImageUri,
-													convert: static (Uri? uri) => uri is not null ? ImageSource.FromUri(uri) : null)
+													getter: static (ChatModel m) => m.ImageStream,
+													convert: static (Stream? stream) => stream is not null ? ImageSource.FromStream(() => stream) : null)
 												.Bind(VisualElement.IsVisibleProperty,
-													getter: static (ChatModel m) => m.ImageUri,
-													convert: static (Uri? uri) => uri is not null)
+													getter: static (ChatModel m) => m.ImageStream,
+													convert: static (Stream? stream) => stream is not null)
 										}
 									}
 									: label

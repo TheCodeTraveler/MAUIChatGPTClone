@@ -9,7 +9,7 @@ public partial class ChatModel(string text, ChatRole role) : ObservableObject
 	public partial string Text { get; set; } = text;
 
 	[ObservableProperty]
-	public partial Uri? ImageUri { get; set; }
+	public partial Stream? ImageStream { get; set; }
 
 	public ChatRole Role { get; } = role;
 }

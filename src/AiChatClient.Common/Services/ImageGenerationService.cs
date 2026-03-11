@@ -1,6 +1,7 @@
-#pragma warning disable MEAI001 // IImageGenerator is for evaluation purposes only
-
+using System.Buffers.Text;
+using System.Net.NetworkInformation;
 using Microsoft.Extensions.AI;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AiChatClient.Common;
 
@@ -13,15 +14,19 @@ public sealed class ImageGenerationService(IImageGenerator imageGenerator)
 		"generate an image",
 		"generate image",
 		"create an image",
+		"create a painting",
 		"create image",
 		"draw me",
 		"draw a ",
 		"draw an ",
+		"drawing of",
+		"painting of",
 		"picture of",
 		"photo of",
 		"illustration of",
 		"make an image",
 		"make image",
+		"make a painting",
 		"make a picture",
 	];
 
@@ -30,11 +35,21 @@ public sealed class ImageGenerationService(IImageGenerator imageGenerator)
 		return Array.Exists(_imageKeywords, k => input.Contains(k, StringComparison.OrdinalIgnoreCase));
 	}
 
-	public async Task<Uri?> GenerateImageAsync(string prompt, CancellationToken token)
+	public async Task<Stream?> GenerateImageAsync(string prompt, CancellationToken token)
 	{
-		var response = await _imageGenerator.GenerateImagesAsync(prompt, options: null, cancellationToken: token).ConfigureAwait(false);
+		var options = new ImageGenerationOptions
+		{
+			MediaType = "image/png",
+			ImageSize = new System.Drawing.Size(1024, 1024),
+			Count = 1
+		};
+
+		var response = await _imageGenerator.GenerateImagesAsync(prompt, options, cancellationToken: token).ConfigureAwait(false);
 
 		var firstImage = response.Contents.OfType<DataContent>().FirstOrDefault();
-		return firstImage?.Uri is string uri ? new Uri(uri) : null;
+
+		return firstImage?.Base64Data is not null 
+				? new MemoryStream(Convert.FromBase64String(firstImage.Base64Data.ToString()))
+				: null;
 	}
 }
