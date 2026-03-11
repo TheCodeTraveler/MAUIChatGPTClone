@@ -165,20 +165,15 @@ This guide provides a set of best practices and coding standards for writing C# 
 		ArgumentNullException.ThrowIfNull(order);
 	}
 	```
-- Use null-forgiving operator only when appropriate:
+- Never use null-forgiving operator:
 	```csharp
 	public class OrderValidator
 	{
-		private readonly IValidator<Order> _validator;
-		
-		public OrderValidator(IValidator<Order> validator)
-		{
-			_validator = validator ?? throw new ArgumentNullException(nameof(validator));
-		}
+		private readonly IValidator<Order>? _validator;
 		
 		public ValidationResult Validate(Order order)
 		{
-			// We know _validator can't be null due to constructor check
+			// Do not use the Null Forgiving Operator
 			return _validator!.Validate(order);
 		}
 	}
@@ -224,7 +219,6 @@ This guide provides a set of best practices and coding standards for writing C# 
 			new(backgroundColor, borderColor);
 	}
 	```
-- Never use the Null Forgiving Operator
 - Document nullability in interfaces:
 	```csharp
 	public interface IOrderRepository
@@ -538,37 +532,37 @@ This guide provides a set of best practices and coding standards for writing C# 
 
 ### Element Positioning
 
-Please adhere to the following Style Cop rules for organizing code in a file:
+Ensure code always adheres to the following Style Cop rules for organizing code in a file when possible:
 - [Style Cop SA1201](https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1201.md)
 - [Style Cop SA1202](https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1202.md)
 - [Style Cop SA1204](https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1204.md)
 - [Style Cop SA1214](https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1214.md)
 - [Style Cop SA1215](https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1215.md)
 
-Elements at the file root level or within a namespace should be positioned in the following order:
+Elements at the file root level, or within a namespace, should be positioned in the following order:
 
-Extern Alias Directives
-Using Directives
-Namespaces
-Delegates
-Enums
-Interfaces
-Records
-Structs
-Classes
+1. Extern Alias Directives
+2. Using Directives
+3. Namespaces
+4. Delegates
+5. Enums
+6. Interfaces
+7. Records
+8. Structs
+9. Classes
 
 Within a class, struct, or interface, elements should be positioned in the following order:
 
-Fields
-Constructors
-Finalizers (Destructors)
-Delegates
-Events
-Enums
-Interfaces
-Properties
-Indexers
-Methods
-Records
-Structs
-Classes
+1. Fields
+2. Constructors
+3. Finalizers (Destructors)
+4. Delegates
+5. Events
+6. Enums
+7. Interfaces
+8. Properties
+9. Indexers
+10. Methods
+11. Records
+12. Structs
+13. Classes
