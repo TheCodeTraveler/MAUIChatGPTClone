@@ -5,11 +5,12 @@ namespace AiChatClient.Maui;
 
 public partial class ChatModel(string text, ChatRole role) : ObservableObject
 {
+	public ChatRole Role { get; } = role;
+	
 	[ObservableProperty]
 	public partial string Text { get; set; } = text;
 
 	[ObservableProperty]
-	public partial Stream? ImageStream { get; set; }
+	public partial Stream ImageStream { get; set; } = Stream.Null;
 
-	public ChatRole Role { get; } = role;
 }

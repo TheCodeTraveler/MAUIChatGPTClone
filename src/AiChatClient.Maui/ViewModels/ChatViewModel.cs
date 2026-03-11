@@ -52,9 +52,16 @@ public partial class ChatViewModel(
 			{
 				await _chatClientService.AddToConversationHistory(new ChatMessage(ChatRole.User, inputText), token).ConfigureAwait(false);
 
-				var imageStream = await _imageGenerationService.GenerateImageAsync(inputText, token).ConfigureAwait(false);
-				assistantBubble.ImageStream = imageStream;
-				assistantBubble.Text = "Here's the generated image:";
+				var image = await _imageGenerationService.GenerateImageAsync(inputText, token).ConfigureAwait(false);
+				if (image is not null)
+				{
+					assistantBubble.ImageStream = image;
+					assistantBubble.Text = "Here's the generated image:";
+				}
+				else
+				{
+					assistantBubble.Text = "I was unable to generate an image for you";
+				}
 			}
 			else
 			{
