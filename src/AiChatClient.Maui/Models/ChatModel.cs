@@ -16,4 +16,9 @@ public sealed partial class ChatModel(string text, ChatRole role) : ObservableOb
 	public void Dispose() => ImageStream.Dispose();
 
 	public ValueTask DisposeAsync() => ImageStream.DisposeAsync();
+
+	partial void OnImageStreamChanging(Stream oldValue, Stream newValue)
+	{
+		oldValue.Dispose();
+	}
 }
