@@ -20,9 +20,9 @@ public class TrainedFileNameService(IPreferences preferences)
 #if IOS || ANDROID
 			return [.._inMemoryFileNameList];
 #else
-			var serializedTrainedFiles = _preferences.Get<string>(_trainedFilesKey, "[]");
+			var serializedTrainedFiles = _preferences.Get(_trainedFilesKey, "[]");
 			return JsonSerializer.Deserialize<ImmutableList<string>>(serializedTrainedFiles)
-			       ?? throw new InvalidOperationException("");
+			       ?? throw new InvalidOperationException("Unable to deserialize Trained Files List");
 #endif
 		}
 	}
@@ -33,7 +33,9 @@ public class TrainedFileNameService(IPreferences preferences)
 		_inMemoryFileNameList.Add(fileName);
 #else
 		var updatedTrainedFileNamesList = TrainedFileNames.Add(fileName);
-		_preferences.Set(_trainedFilesKey, updatedTrainedFileNamesList);
+		var serializedTrainedFileNamesList = JsonSerializer.Serialize(updatedTrainedFileNamesList);
+
+		_preferences.Set(_trainedFilesKey, serializedTrainedFileNamesList);
 #endif
 	}
 }
