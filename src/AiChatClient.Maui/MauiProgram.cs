@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using AiChatClient.Common;
 using AiChatClient.Common.Models;
-using AiChatClient.Maui.Pages;
 using Azure.AI.OpenAI;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
@@ -51,7 +50,9 @@ static class MauiProgram
 		builder.Services.AddSingleton<ChatClientService>();
 		builder.Services.AddSingleton<PdfIngestionService>();
 		builder.Services.AddSingleton<ImageGenerationService>();
+		builder.Services.AddSingleton<TrainedFileNameService>();
 		builder.Services.AddSingleton<IFilePicker>(static _ => FilePicker.Default);
+		builder.Services.AddSingleton<IPreferences>(static _ => Preferences.Default);
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
 		builder.Services.AddSingleton(static _ => CreateVectorCollection());

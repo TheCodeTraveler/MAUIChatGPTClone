@@ -1,4 +1,4 @@
-﻿namespace AiChatClient.Maui.Pages;
+﻿namespace AiChatClient.Maui;
 
 interface IRoutable
 {

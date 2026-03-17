@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using AiChatClient.Maui.Pages;
 
 namespace AiChatClient.Maui;
 

@@ -1,4 +1,3 @@
-using AiChatClient.Maui.Pages;
 using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Markup;
 using static CommunityToolkit.Maui.Markup.GridRowsColumns;

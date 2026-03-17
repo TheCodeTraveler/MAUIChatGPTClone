@@ -1,4 +1,3 @@
-using AiChatClient.Maui.Pages;
 using CommunityToolkit.Maui.Markup;
 using static CommunityToolkit.Maui.Markup.GridRowsColumns;
 
@@ -14,6 +13,7 @@ partial class TrainedFilesPage : BasePage<TrainedFilesViewModel>, IRoutable
 
 			RowDefinitions = Rows.Define(
 				(Row.IngestButton, 40),
+				(Row.TrainedFilesList, Star),
 				(Row.Indicator, 30)),
 
 			Children =
@@ -24,6 +24,15 @@ partial class TrainedFilesPage : BasePage<TrainedFilesViewModel>, IRoutable
 					.Bind(Button.CommandProperty,
 						getter: static (TrainedFilesViewModel vm) => vm.PickAndIngestPdfCommand,
 						mode: BindingMode.OneTime),
+
+				new CollectionView
+					{
+						ItemTemplate = new DataTemplate(() => new Label().Bind(Label.TextProperty, "."))
+					}
+					.Row(Row.TrainedFilesList)
+					.Bind(CollectionView.ItemsSourceProperty,
+						getter: static (TrainedFilesViewModel viewModel) => viewModel.TrainedFileNames,
+						mode: BindingMode.OneWay),
 
 				new ActivityIndicator()
 					.Row(Row.Indicator)
@@ -45,6 +54,7 @@ partial class TrainedFilesPage : BasePage<TrainedFilesViewModel>, IRoutable
 	enum Row
 	{
 		IngestButton,
+		TrainedFilesList,
 		Indicator
 	}
 }
