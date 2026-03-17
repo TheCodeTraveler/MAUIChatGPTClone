@@ -50,12 +50,14 @@ static class MauiProgram
 		builder.Services.AddSingleton<InventoryService>();
 		builder.Services.AddSingleton<ChatClientService>();
 		builder.Services.AddSingleton<PdfIngestionService>();
+		builder.Services.AddSingleton<ImageGenerationService>();
 		builder.Services.AddSingleton<IFilePicker>(static _ => FilePicker.Default);
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
-		builder.Services.AddChatClient(static _ => CreateOllamaChatClient());
-		builder.Services.AddEmbeddingGenerator(static _ => CreateOllamaEmbeddingGenerator());
 		builder.Services.AddSingleton(static _ => CreateVectorCollection());
+		builder.Services.AddChatClient(static _ => CreateAzureOpenAiChatClient());
+		builder.Services.AddImageGenerator(static _ => CreateAzureOpenAiImageGenerator());
+		builder.Services.AddEmbeddingGenerator(static _ => CreateAzureOpenAiEmbeddingGenerator());
 
 		return builder.Build();
 	}
@@ -100,6 +102,16 @@ static class MauiProgram
 		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
 			.GetEmbeddingClient(embeddingModelId)
 			.AsIEmbeddingGenerator();
+	}
+
+	static IImageGenerator CreateAzureOpenAiImageGenerator()
+	{
+		const string imageModelId = "gpt-image-1.5";
+		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
+
+		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
+			.GetImageClient(imageModelId)
+			.AsIImageGenerator();
 	}
 
 	static IEmbeddingGenerator<string, Embedding<float>> CreateOllamaEmbeddingGenerator()

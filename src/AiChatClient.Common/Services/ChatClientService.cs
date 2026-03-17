@@ -45,13 +45,13 @@ public sealed class ChatClientService(IChatClient client) : IDisposable
 		return GetStreamingResponseAsync([new ChatMessage(ChatRole.User, input)], options, token);
 	}
 
-	public async Task AddAssistantResponse(string response, CancellationToken token)
+	public async Task AddToConversationHistory(ChatMessage message, CancellationToken token)
 	{
 		await _chatHistorySemaphoreSlim.WaitAsync(token).ConfigureAwait(false);
 
 		try
 		{
-			_conversationHistory.Add(new ChatMessage(ChatRole.Assistant, response));
+			_conversationHistory.Add(message);
 		}
 		finally
 		{

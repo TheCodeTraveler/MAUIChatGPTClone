@@ -9,9 +9,11 @@ public abstract class BaseTest
 {
 	readonly Lazy<IChatClient> _chatClientHolder = new(CreateChatClient);
 	readonly Lazy<IEmbeddingGenerator<string, Embedding<float>>> _embeddingGeneratorHolder = new(CreateEmbeddingGenerator);
+	readonly Lazy<IImageGenerator> _imageGeneratorHolder = new(CreateImageGenerator);
 
 	protected IChatClient ChatClient => _chatClientHolder.Value;
 	protected IEmbeddingGenerator<string, Embedding<float>> EmbeddingGenerator => _embeddingGeneratorHolder.Value;
+	protected IImageGenerator ImageGenerator => _imageGeneratorHolder.Value;
 
 	[SetUp]
 	public virtual void Setup()
@@ -27,6 +29,9 @@ public abstract class BaseTest
 
 		if (_embeddingGeneratorHolder.IsValueCreated)
 			EmbeddingGenerator.Dispose();
+
+		if (_imageGeneratorHolder.IsValueCreated)
+			(ImageGenerator as IDisposable)?.Dispose();
 	}
 
 	static IChatClient CreateChatClient()
@@ -51,5 +56,15 @@ public abstract class BaseTest
 		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
 			.GetEmbeddingClient(embeddingModelId)
 			.AsIEmbeddingGenerator();
+	}
+
+	static IImageGenerator CreateImageGenerator()
+	{
+		const string imageModelId = "gpt-image-1.5";
+		var apiCredentials = new ApiKeyCredential(AzureOpenAiCredentials.ApiKey);
+
+		return new AzureOpenAIClient(AzureOpenAiCredentials.Endpoint, apiCredentials)
+			.GetImageClient(imageModelId)
+			.AsIImageGenerator();
 	}
 }

@@ -15,10 +15,10 @@ class ChatDataTemplateSelector : DataTemplateSelector
 
 		if (chatModel.Role == ChatRole.User)
 			return _userChatTemplate;
-		else if (chatModel.Role == ChatRole.Assistant)
+		if (chatModel.Role == ChatRole.Assistant)
 			return _assistantChatTemplate;
-		else
-			throw new NotSupportedException("The current chat role is not yet supported");
+
+		throw new NotSupportedException("The current chat role is not yet supported");
 	}
 
 	class ChatDataTemplate(ChatRole role) : DataTemplate(() => CreateDataTemplate(role))
@@ -32,10 +32,26 @@ class ChatDataTemplateSelector : DataTemplateSelector
 					StrokeThickness = 0,
 					StrokeShape = new RoundRectangle { CornerRadius = 16 },
 
-					Content = new Label { LineBreakMode = LineBreakMode.WordWrap }
+					Content = new VerticalStackLayout
+					{
+						Spacing = 8,
+						Children =
+						{
+							new Label { LineBreakMode = LineBreakMode.WordWrap }
 								.TextColor(role == ChatRole.User ? Colors.White : Color.FromArgb("#1C1C1E"))
 								.Bind(Label.TextProperty,
-									getter: static (ChatModel b) => b.Text)
+									getter: static (ChatModel b) => b.Text,
+									convert: static (string? text) => string.IsNullOrWhiteSpace(text) ? "..." : text),
+
+							new Image { Aspect = Aspect.AspectFit, HeightRequest = 300 }
+								.Bind(Image.SourceProperty,
+									getter: static (ChatModel m) => m.ImageStream,
+									convert: static (Stream? stream) => stream != Stream.Null ? ImageSource.FromStream(() => stream) : null)
+								.Bind(VisualElement.IsVisibleProperty,
+									getter: static (ChatModel m) => m.ImageStream,
+									convert: static (Stream? stream) => stream != Stream.Null)
+						}
+					}
 				}
 				.BackgroundColor(role == ChatRole.User ? Color.FromArgb("#007AFF") : Color.FromArgb("#E5E5EA"))
 				.Margin(role == ChatRole.User ? new Thickness(60, 0, 0, 0) : new Thickness(0, 0, 150, 0))
