@@ -13,7 +13,7 @@
     <PackageVersion Include="CommunityToolkit.Maui" Version="14.0.1" />
     <PackageVersion Include="CommunityToolkit.Maui.Markup" Version="7.0.1" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageVersion Include="coverlet.collector" Version="8.0.0" />
+    <PackageVersion Include="coverlet.collector" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.AI" Version="10.3.0" />
     <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="10.3.0" />
     <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="10.3.0" />
