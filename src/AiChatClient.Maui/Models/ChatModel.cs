@@ -7,18 +7,22 @@ public sealed partial class ChatModel(string text, ChatRole role) : ObservableOb
 {
 	public ChatRole Role { get; } = role;
 
+	public Stream ImageStream => CreateImageStream();
+
 	[ObservableProperty]
 	public partial string Text { get; set; } = text;
 
-	[ObservableProperty]
-	public partial Stream ImageStream { get; set; } = Stream.Null;
+	[ObservableProperty, NotifyPropertyChangedFor(nameof(ImageStream))]
+	public partial byte[]? ImageData { get; set; }
 
 	public void Dispose() => ImageStream.Dispose();
 
 	public ValueTask DisposeAsync() => ImageStream.DisposeAsync();
 
-	partial void OnImageStreamChanging(Stream oldValue, Stream newValue)
+	partial void OnImageDataChanging(byte[]? value)
 	{
-		oldValue.Dispose();
+		ImageStream.Dispose();
 	}
+
+	Stream CreateImageStream() => ImageData is null ? Stream.Null : new MemoryStream(ImageData);
 }
