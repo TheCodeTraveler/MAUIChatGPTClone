@@ -3,7 +3,6 @@ using AiChatClient.Common;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.AI;
-using Trace = System.Diagnostics.Trace;
 
 namespace AiChatClient.Maui;
 
@@ -19,6 +18,10 @@ public partial class ChatViewModel(
 	readonly PdfIngestionService _pdfIngestionService = pdfIngestionService;
 	readonly ImageGenerationService _imageGenerationService = imageGenerationService;
 
+	public string ImageGenerationModeImageButtonSource => IsImageGenerationMode
+															? "palette_filled.png"
+															: "palette_outline.png";
+
 	public ObservableCollection<ChatModel> ConversationHistory { get; } = [];
 
 	[ObservableProperty]
@@ -26,6 +29,9 @@ public partial class ChatViewModel(
 
 	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(SubmitInputTextCommand))]
 	public partial bool CanSubmitInputTextExecute { get; private set; } = true;
+
+	[ObservableProperty, NotifyPropertyChangedFor(nameof(ImageGenerationModeImageButtonSource))]
+	public partial bool IsImageGenerationMode { get; set; } = false;
 
 	public async Task ClearConversationHistory(CancellationToken token)
 	{
@@ -45,10 +51,17 @@ public partial class ChatViewModel(
 		}
 	}
 
+	[RelayCommand(CanExecute = nameof(CanSubmitInputTextExecute))]
+	void ToggleImageGenerationModeButton()
+	{
+		IsImageGenerationMode = !IsImageGenerationMode;
+	}
+
 	[RelayCommand(IncludeCancelCommand = true, AllowConcurrentExecutions = false, CanExecute = nameof(CanSubmitInputTextExecute))]
 	async Task SubmitInputText(CancellationToken token)
 	{
 		var inputText = InputText;
+		var isImageGenerationMode = IsImageGenerationMode;
 
 		CanSubmitInputTextExecute = false;
 
@@ -60,7 +73,7 @@ public partial class ChatViewModel(
 
 		try
 		{
-			if (ImageGenerationService.IsImageGenerationRequest(inputText))
+			if (isImageGenerationMode)
 			{
 				await _chatClientService.AddToConversationHistory(new ChatMessage(ChatRole.User, inputText), token).ConfigureAwait(false);
 

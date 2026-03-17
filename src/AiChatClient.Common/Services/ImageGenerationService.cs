@@ -7,32 +7,6 @@ public sealed class ImageGenerationService(IImageGenerator imageGenerator)
 {
 	readonly IImageGenerator _imageGenerator = imageGenerator;
 
-	static readonly string[] _imageKeywords =
-	[
-		"generate an image",
-		"generate image",
-		"create an image",
-		"create a painting",
-		"create image",
-		"draw me",
-		"draw a ",
-		"draw an ",
-		"drawing of",
-		"painting of",
-		"picture of",
-		"photo of",
-		"illustration of",
-		"make an image",
-		"make image",
-		"make a painting",
-		"make a picture",
-	];
-
-	public static bool IsImageGenerationRequest(string input)
-	{
-		return Array.Exists(_imageKeywords, k => input.Contains(k, StringComparison.OrdinalIgnoreCase));
-	}
-
 	public async Task<byte[]?> GenerateImageAsync(string prompt, CancellationToken token)
 	{
 		var options = new ImageGenerationOptions
