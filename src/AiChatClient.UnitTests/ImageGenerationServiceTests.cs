@@ -5,7 +5,7 @@ namespace AiChatClient.UnitTests;
 public class ImageGenerationServiceTests : BaseTest
 {
 	[Test]
-	public async Task GenerateImageAsync_ReturnsNonNullStream()
+	public async Task GenerateImageAsync_ReturnsNonNullByteArray()
 	{
 		// Arrange
 		var service = new ImageGenerationService(ImageGenerator);
