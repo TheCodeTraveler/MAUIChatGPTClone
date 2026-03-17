@@ -1,4 +1,3 @@
-using System.Buffers;
 using Microsoft.Extensions.AI;
 
 namespace AiChatClient.Common;
