@@ -17,7 +17,7 @@ class ChatDataTemplateSelector : DataTemplateSelector
 			return _userChatTemplate;
 		if (chatModel.Role == ChatRole.Assistant)
 			return _assistantChatTemplate;
-		
+
 		throw new NotSupportedException("The current chat role is not yet supported");
 	}
 
