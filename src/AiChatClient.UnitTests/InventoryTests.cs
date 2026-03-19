@@ -1,6 +1,7 @@
 ﻿using AiChatClient.Common;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.AI.Evaluation;
+using Microsoft.Extensions.AI.Evaluation.NLP;
 using Microsoft.Extensions.AI.Evaluation.Quality;
 using Microsoft.Extensions.AI.Evaluation.Safety;
 
@@ -121,5 +122,31 @@ public class InventoryTests : BaseTest
 		var completenessResultMetric = completenessResult.Get<NumericMetric>(CompletenessEvaluator.CompletenessMetricName);
 
 		Assert.That(completenessResultMetric.Value, Is.GreaterThanOrEqualTo(4));
+	}
+
+	[Test]
+	public async Task Fibonacci_BLEUEvaluator()
+	{
+		// Arrange
+		var bleuEvaluator = new BLEUEvaluator();
+		var bleuContext = new BLEUEvaluatorContext(
+			"0, 1, 1, 2, 3, 5, 8, 13, 21, 34",
+			"The first 10 numbers of the Fibonacci Sequence are 0, 1, 1, 2, 3, 5, 8, 13, 21, 34");
+
+		var chatMessages = new List<ChatMessage>
+		{
+			new(ChatRole.System, "Respond with only the requested data. Do not include any explanations or extra text."),
+			new(ChatRole.User, "List the first ten numbers of the Fibonacci Sequence")
+		};
+
+		// Act
+		var response = await ChatClient.GetResponseAsync(chatMessages);
+
+		var bleuResult = await bleuEvaluator.EvaluateAsync(
+			chatMessages, response, new ChatConfiguration(ChatClient), [bleuContext]);
+
+		var bleuResultMetric = bleuResult.Get<NumericMetric>(BLEUEvaluator.BLEUMetricName);
+
+		Assert.That(bleuResultMetric.Value, Is.GreaterThanOrEqualTo(0.9));
 	}
 }

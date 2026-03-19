@@ -1,6 +1,7 @@
 using AiChatClient.Common;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.AI.Evaluation;
+using Microsoft.Extensions.AI.Evaluation.NLP;
 using Microsoft.Extensions.AI.Evaluation.Quality;
 
 namespace AiChatClient.UnitTests;
@@ -199,6 +200,34 @@ public class ChatClientServiceTests : BaseTest
 
 		// Assert
 		Assert.That(equivalenceResultMetric.Value, Is.GreaterThanOrEqualTo(4));
+	}
+
+	[Test]
+	public async Task GetStreamingResponseForUserAsync_F1Evaluator()
+	{
+		// Arrange
+		using var service = new ChatClientService(ChatClient);
+		var f1Evaluator = new F1Evaluator();
+		var f1Context = new F1EvaluatorContext("The capital of France is Paris");
+		var options = new ChatOptions();
+
+		var messages = new List<ChatMessage>
+		{
+			new(ChatRole.User, "What is the capital of France?")
+		};
+
+		// Act
+		var responseText = string.Empty;
+		await foreach (var update in service.GetStreamingResponseForUserAsync("What is the capital of France?", options, CancellationToken.None))
+		{
+			responseText += update.Text;
+		}
+
+		var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, responseText));
+		var f1Result = await f1Evaluator.EvaluateAsync(messages, response, new ChatConfiguration(ChatClient), [f1Context]);
+		var f1ResultMetric = f1Result.Get<NumericMetric>(F1Evaluator.F1MetricName);
+
+		Assert.That(f1ResultMetric.Value, Is.GreaterThanOrEqualTo(0.85));
 	}
 
 	[Test]
