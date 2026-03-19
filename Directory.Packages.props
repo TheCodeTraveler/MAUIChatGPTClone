@@ -9,7 +9,7 @@
     <PackageVersion Include="AWSSDK.Bedrock" Version="4.0.23.1" />
     <PackageVersion Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.6.2" />
     <PackageVersion Include="AsyncAwaitBestPractices.MVVM" Version="10.0.0" />
-    <PackageVersion Include="Azure.AI.OpenAI" Version="2.8.0-beta.1" />
+    <PackageVersion Include="Azure.AI.OpenAI" Version="2.9.0-beta.1" />
     <PackageVersion Include="CommunityToolkit.Maui" Version="14.0.1" />
     <PackageVersion Include="CommunityToolkit.Maui.Markup" Version="7.0.1" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.1" />
@@ -19,7 +19,7 @@
     <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="10.4.1" />
     <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.NLP" Version="10.4.0-preview.1.26160.2" />
     <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.Quality" Version="10.4.0" />
-    <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.Safety" Version="10.3.0-preview.1.26109.11" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.Safety" Version="10.4.0-preview.1.26160.2" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.4.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.5" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.0.0" />
