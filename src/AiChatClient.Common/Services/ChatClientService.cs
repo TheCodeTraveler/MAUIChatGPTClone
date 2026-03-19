@@ -75,6 +75,7 @@ public sealed class ChatClientService(IChatClient client) : IDisposable
 
 	public void Dispose()
 	{
+		_conversationHistory.Clear();
 		_chatHistorySemaphoreSlim.Dispose();
 	}
 }
