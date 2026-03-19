@@ -231,31 +231,63 @@ public class ChatClientServiceTests : BaseTest
 	}
 
 	[Test]
-	public async Task GetStreamingResponseForUserAsync_F1Evaluator_French()
+	public async Task GetStreamingResponseForUserAsync_BleuEvaluator_French()
 	{
 		// Arrange
+		const string message = "Quelle est la capitale de la France?";
+
 		using var service = new ChatClientService(ChatClient);
-		var f1Evaluator = new F1Evaluator();
-		var f1Context = new F1EvaluatorContext("La capitale de la France est Paris");
+		var bleuEvaluator = new BLEUEvaluator();
+		var bleuContext = new BLEUEvaluatorContext("La capitale de la France est Paris");
 		var options = new ChatOptions();
 
 		var messages = new List<ChatMessage>
 		{
-			new(ChatRole.User, "Quelle est la capitale de la France ?")
+			new(ChatRole.User, message)
 		};
 
 		// Act
 		var responseText = string.Empty;
-		await foreach (var update in service.GetStreamingResponseForUserAsync("Quelle est la capitale de la France ?", options, CancellationToken.None))
+		await foreach (var update in service.GetStreamingResponseForUserAsync(message, options, CancellationToken.None))
 		{
 			responseText += update.Text;
 		}
 
 		var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, responseText));
-		var f1Result = await f1Evaluator.EvaluateAsync(messages, response, new ChatConfiguration(ChatClient), [f1Context]);
-		var f1ResultMetric = f1Result.Get<NumericMetric>(F1Evaluator.F1MetricName);
+		var bleuResult = await bleuEvaluator.EvaluateAsync(messages, response, new ChatConfiguration(ChatClient), [bleuContext]);
+		var bleuResultMetric = bleuResult.Get<NumericMetric>(BLEUEvaluator.BLEUMetricName);
 
-		Assert.That(f1ResultMetric.Value, Is.GreaterThanOrEqualTo(0.85));
+		Assert.That(bleuResultMetric.Value, Is.GreaterThanOrEqualTo(0.8));
+	}
+
+	[Test]
+	public async Task GetStreamingResponseForUserAsync_GleuEvaluator_French()
+	{
+		// Arrange
+		const string message = "Quelle est la capitale de la France?";
+
+		using var service = new ChatClientService(ChatClient);
+		var gleuEvaluator = new GLEUEvaluator();
+		var gleuContext = new GLEUEvaluatorContext("La capitale de la France est Paris");
+		var options = new ChatOptions();
+
+		var messages = new List<ChatMessage>
+		{
+			new(ChatRole.User, message)
+		};
+
+		// Act
+		var responseText = string.Empty;
+		await foreach (var update in service.GetStreamingResponseForUserAsync(message, options, CancellationToken.None))
+		{
+			responseText += update.Text;
+		}
+
+		var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, responseText));
+		var gleuResult = await gleuEvaluator.EvaluateAsync(messages, response, new ChatConfiguration(ChatClient), [gleuContext]);
+		var gleuResultMetric = gleuResult.Get<NumericMetric>(GLEUEvaluator.GLEUMetricName);
+
+		Assert.That(gleuResultMetric.Value, Is.GreaterThanOrEqualTo(0.8));
 	}
 
 	[Test]
