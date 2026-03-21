@@ -56,9 +56,9 @@ static class MauiProgram
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
 		builder.Services.AddSingleton(static _ => CreateVectorCollection());
-		builder.Services.AddChatClient(static _ => CreateAzureOpenAiChatClient());
+		builder.Services.AddChatClient(static _ => CreateOllamaChatClient());
 		builder.Services.AddImageGenerator(static _ => CreateAzureOpenAiImageGenerator());
-		builder.Services.AddEmbeddingGenerator(static _ => CreateAzureOpenAiEmbeddingGenerator());
+		builder.Services.AddEmbeddingGenerator(static _ => CreateOllamaEmbeddingGenerator());
 
 		return builder.Build();
 	}
@@ -88,7 +88,7 @@ static class MauiProgram
 	{
 		const string modelId = "qwen3.5";
 
-		var ollamaClient = new OllamaApiClient(OllamaCredentials.EndPointUrl, modelId);
+		var ollamaClient = new OllamaApiClient(GetOllamaEndpoint(), modelId);
 
 		return new ChatClientBuilder(ollamaClient)
 			.UseFunctionInvocation()
@@ -119,7 +119,7 @@ static class MauiProgram
 	{
 		const string embeddingModelId = "qwen3-embedding";
 
-		return new OllamaApiClient(OllamaCredentials.EndPointUrl, embeddingModelId);
+		return new OllamaApiClient(GetOllamaEndpoint(), embeddingModelId);
 	}
 
 	static VectorStoreCollection<string, PdfChunkRecord> CreateVectorCollection()
@@ -135,5 +135,14 @@ static class MauiProgram
 #endif
 
 		return vectorStore.GetCollection<string, PdfChunkRecord>(collectionName);
+	}
+
+	static string GetOllamaEndpoint()
+	{
+#if ANDROID
+		return "http://10.0.2.2:11434";
+#else
+		return "http://127.0.0.1:11434";
+#endif
 	}
 }
