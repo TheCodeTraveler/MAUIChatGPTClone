@@ -36,7 +36,7 @@
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
-    <PackageVersion Include="PdfPig" Version="0.1.13" />
+    <PackageVersion Include="PdfPig" Version="0.1.14" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
     <PackageVersion Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
   </ItemGroup>
