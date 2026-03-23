@@ -123,7 +123,7 @@ partial class ChatPage : BasePage<ChatViewModel>, IRoutable
 		};
 	}
 
-	public static string Route { get; } = $"/{nameof(ChatPage)}";
+	public static string Route { get; } = $"{nameof(ChatPage)}";
 
 	async void OnClearConversationHistoryButtonClicked(object? sender, EventArgs e)
 	{

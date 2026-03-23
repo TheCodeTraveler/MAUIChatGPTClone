@@ -49,7 +49,7 @@ partial class TrainedFilesPage : BasePage<TrainedFilesViewModel>, IRoutable
 		};
 	}
 
-	public static string Route { get; } = $"/{nameof(ChatPage)}/{nameof(TrainedFilesPage)}";
+	public static string Route { get; } = $"{nameof(TrainedFilesPage)}";
 
 	enum Row
 	{
