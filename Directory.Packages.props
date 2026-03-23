@@ -29,7 +29,7 @@
     <PackageVersion Include="Microsoft.SemanticKernel.Connectors.InMemory" Version="1.73.0-preview" />
     <PackageVersion Include="Microsoft.SemanticKernel.Connectors.SqliteVec" Version="1.73.0-preview" />
     <PackageVersion Include="NUnit" Version="4.5.1" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="6.1.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="6.2.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.12.0" />
     <PackageVersion Include="OllamaSharp" Version="5.4.24" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
