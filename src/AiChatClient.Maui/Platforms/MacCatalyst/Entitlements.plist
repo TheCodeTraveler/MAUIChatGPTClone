@@ -20,7 +20,7 @@
 	<true/>
 	<key>com.apple.security.personal-information.photos-library</key>
 	<true/>
-	<key>ICloudContainerIdentifiers</key>
+	<key>com.apple.developer.icloud-container-identifiers</key>
 	<array>
 		<string>iCloud.com.codetraveler.aichatclient.maui</string>
 	</array>
