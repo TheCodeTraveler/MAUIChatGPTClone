@@ -16,7 +16,7 @@
 	<true/>
 	<key>ICloudContainerIdentifiers</key>
 	<array>
-		<string>iCloud.com.companyname.aichatclient.maui</string>
+		<string>iCloud.com.codetraveler.aichatclient.maui</string>
 	</array>
 	<key>com.apple.developer.icloud-services</key>
 	<array>

@@ -38,10 +38,6 @@
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     </PropertyGroup>
 
-    <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
-      <UseInterpreter>true</UseInterpreter>
-    </PropertyGroup>
-
     <ItemGroup>
         <!-- App Icon -->
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -62,10 +58,12 @@
 
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
     <CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
+    <CodesignProvision>AiChatClient MacCatalyst</CodesignProvision>
   </PropertyGroup>
 
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
     <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
+    <UseInterpreter>true</UseInterpreter>
   </PropertyGroup>
 
     <ItemGroup>
