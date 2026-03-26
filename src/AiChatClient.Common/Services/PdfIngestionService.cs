@@ -1,5 +1,6 @@
 using AiChatClient.Common.Models;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.VectorData;
 using UglyToad.PdfPig;
 
@@ -7,7 +8,7 @@ namespace AiChatClient.Common;
 
 public class PdfIngestionService(
 	IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
-	VectorStoreCollection<string, PdfChunkRecord> vectorCollection)
+	[FromKeyedServices("PdfVectorStore")]VectorStoreCollection<string, PdfChunkRecord> vectorCollection)
 {
 	const int _chunkSize = 1000;
 	const int _chunkOverlap = 200;

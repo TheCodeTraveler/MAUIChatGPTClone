@@ -55,10 +55,11 @@ static class MauiProgram
 		builder.Services.AddSingleton<IPreferences>(static _ => Preferences.Default);
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
-		builder.Services.AddSingleton(static _ => CreateVectorCollection());
 		builder.Services.AddChatClient(static _ => CreateOllamaChatClient());
 		builder.Services.AddImageGenerator(static _ => CreateAzureOpenAiImageGenerator());
 		builder.Services.AddEmbeddingGenerator(static _ => CreateOllamaEmbeddingGenerator());
+		builder.Services.AddKeyedSingleton<VectorStoreCollection<string, PdfChunkRecord>>(
+			"PdfVectorStore", static (_,_) => CreateVectorCollection());
 
 		return builder.Build();
 	}
