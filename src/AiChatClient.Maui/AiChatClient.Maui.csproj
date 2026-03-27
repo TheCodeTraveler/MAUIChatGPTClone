@@ -57,13 +57,16 @@
     </ItemGroup>
 
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+    <ProvisioningType>manual</ProvisioningType>
     <CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
     <CodesignProvision>AiChatClient MacCatalyst</CodesignProvision>
   </PropertyGroup>
 
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+    <ProvisioningType>manual</ProvisioningType>
     <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
     <UseInterpreter>true</UseInterpreter>
+    <CodesignProvision>AiChatClient</CodesignProvision>
   </PropertyGroup>
 
     <ItemGroup>
@@ -76,6 +79,7 @@
         <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
         <PackageReference Include="Microsoft.Extensions.AI" />
         <PackageReference Include="Microsoft.Maui.Controls" />
+        <PackageReference Include="Microsoft.Maui.Essentials.AI" />
         <PackageReference Include="Microsoft.SemanticKernel.Connectors.InMemory" />
         <PackageReference Include="Microsoft.SemanticKernel.Connectors.SqliteVec" />
         <PackageReference Include="OllamaSharp" />
