@@ -57,15 +57,16 @@
     </ItemGroup>
 
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+    <ProvisioningType>manual</ProvisioningType>
     <CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
     <CodesignProvision>AiChatClient MacCatalyst</CodesignProvision>
   </PropertyGroup>
 
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+    <ProvisioningType>manual</ProvisioningType>
     <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
     <UseInterpreter>true</UseInterpreter>
     <CodesignProvision>AiChatClient</CodesignProvision>
-    <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
   </PropertyGroup>
 
     <ItemGroup>
