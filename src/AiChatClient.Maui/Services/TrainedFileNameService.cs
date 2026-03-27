@@ -7,7 +7,7 @@ public class TrainedFileNameService(IPreferences preferences)
 {
 	const string _trainedFilesKey = "TrainedFiles";
 
-#if IOS || ANDROID
+#if IOS || ANDROID || MACCATALYST
 	readonly List<string> _inMemoryFileNameList = [];
 #else
 	readonly IPreferences _preferences = preferences;
@@ -17,7 +17,7 @@ public class TrainedFileNameService(IPreferences preferences)
 	{
 		get
 		{
-#if IOS || ANDROID
+#if IOS || ANDROID || MACCATALYST
 			return [.._inMemoryFileNameList];
 #else
 			var serializedTrainedFiles = _preferences.Get(_trainedFilesKey, "[]");
@@ -29,7 +29,7 @@ public class TrainedFileNameService(IPreferences preferences)
 
 	public void AddFilename(string fileName)
 	{
-#if IOS || ANDROID
+#if IOS || ANDROID || MACCATALYST
 		_inMemoryFileNameList.Add(fileName);
 #else
 		var updatedTrainedFileNamesList = TrainedFileNames.Add(fileName);

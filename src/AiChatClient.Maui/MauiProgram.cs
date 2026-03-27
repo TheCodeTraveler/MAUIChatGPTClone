@@ -57,12 +57,12 @@ static class MauiProgram
 		builder.Services.AddSingleton<IPreferences>(static _ => Preferences.Default);
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
-		builder.Services.AddChatClient(static _ => OperatingSystem.IsIOSVersionAtLeast(26) 
+		builder.Services.AddChatClient(static _ => (OperatingSystem.IsIOSVersionAtLeast(26) || OperatingSystem.IsMacCatalystVersionAtLeast(26)) 
 		                                           && DeviceInfo.Current.DeviceType == DeviceType.Physical
 														? CreateAppleIntelligenceChatClient()
 														: CreateOllamaChatClient());
 		
-		builder.Services.AddEmbeddingGenerator(static _ => OperatingSystem.IsIOSVersionAtLeast(26) 
+		builder.Services.AddEmbeddingGenerator(static _ => (OperatingSystem.IsIOSVersionAtLeast(26) || OperatingSystem.IsMacCatalystVersionAtLeast(26))
 		                                                   && DeviceInfo.Current.DeviceType == DeviceType.Physical
 																? CreateAppleEmbeddingGenerator()
 																: CreateOllamaEmbeddingGenerator());
@@ -107,19 +107,23 @@ static class MauiProgram
 	}
 
 	[SupportedOSPlatform("iOS26.0")]
+	[SupportedOSPlatform("macOS26.0")]
+	[SupportedOSPlatform("MacCatalyst26.0")]
 	static IChatClient CreateAppleIntelligenceChatClient() =>
-#if IOS
+#if IOS || MACCATALYST
 		new AppleIntelligenceChatClient();
 #else
-		throw new NotSupportedException();
+		throw new NotSupportedException("AppleIntelligenceChatClient is not supported on the current operating system");
 #endif
 
 	[SupportedOSPlatform("iOS26.0")]
+	[SupportedOSPlatform("macOS26.0")]
+	[SupportedOSPlatform("MacCatalyst26.0")]
 	static IEmbeddingGenerator<string, Embedding<float>> CreateAppleEmbeddingGenerator() =>
-#if IOS
+#if IOS || MACCATALYST
 		new NLEmbeddingGenerator();
 #else
-		throw new NotSupportedException();
+		throw new NotSupportedException("NLEmbeddingGenerator is not supported on the current operating system");
 #endif
 
 	static IEmbeddingGenerator<string, Embedding<float>> CreateAzureOpenAiEmbeddingGenerator()
@@ -153,7 +157,7 @@ static class MauiProgram
 	{
 		const string collectionName = "pdf-chunks";
 
-#if ANDROID || IOS
+#if ANDROID || IOS || MACCATALYST
 		// sqlite-vec does not ship Android/iOS native binaries; use in-memory store on mobile
 		var vectorStore = new InMemoryVectorStore();
 #else
