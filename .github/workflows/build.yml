@@ -43,5 +43,5 @@ jobs:
     - name: Build Console App
       run: dotnet build "./src/AiChatClient.Console" -c Release
 
-    - name: Build MacCatalyst MAUI App
-      run: dotnet build "./src/AiChatClient.Maui" -f net10.0-maccatalyst
+    - name: Build Android MAUI App
+      run: dotnet build "./src/AiChatClient.Maui" -f net10.0-android
