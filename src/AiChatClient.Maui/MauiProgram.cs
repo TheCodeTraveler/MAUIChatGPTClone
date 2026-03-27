@@ -1,5 +1,6 @@
 ﻿using System.ClientModel;
 using System.ComponentModel;
+using System.Runtime.Versioning;
 using AiChatClient.Common;
 using AiChatClient.Common.Models;
 using Azure.AI.OpenAI;
@@ -8,6 +9,7 @@ using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.VectorData;
+using Microsoft.Maui.Essentials.AI;
 using Microsoft.SemanticKernel.Connectors.InMemory;
 using Microsoft.SemanticKernel.Connectors.SqliteVec;
 using OllamaSharp;
@@ -55,11 +57,19 @@ static class MauiProgram
 		builder.Services.AddSingleton<IPreferences>(static _ => Preferences.Default);
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
-		builder.Services.AddChatClient(static _ => CreateOllamaChatClient());
+		builder.Services.AddChatClient(static _ => OperatingSystem.IsIOSVersionAtLeast(26) 
+		                                           && DeviceInfo.Current.DeviceType == DeviceType.Physical
+														? CreateAppleIntelligenceChatClient()
+														: CreateOllamaChatClient());
+		
+		builder.Services.AddEmbeddingGenerator(static _ => OperatingSystem.IsIOSVersionAtLeast(26) 
+		                                                   && DeviceInfo.Current.DeviceType == DeviceType.Physical
+																? CreateAppleEmbeddingGenerator()
+																: CreateOllamaEmbeddingGenerator());
+
 		builder.Services.AddImageGenerator(static _ => CreateAzureOpenAiImageGenerator());
-		builder.Services.AddEmbeddingGenerator(static _ => CreateOllamaEmbeddingGenerator());
 		builder.Services.AddKeyedSingleton<VectorStoreCollection<string, PdfChunkRecord>>(
-			"PdfVectorStore", static (_,_) => CreateVectorCollection());
+			"PdfVectorStore", static (_, _) => CreateVectorCollection());
 
 		return builder.Build();
 	}
@@ -95,6 +105,22 @@ static class MauiProgram
 			.UseFunctionInvocation()
 			.Build();
 	}
+
+	[SupportedOSPlatform("iOS26.0")]
+	static IChatClient CreateAppleIntelligenceChatClient() =>
+#if IOS
+		new AppleIntelligenceChatClient();
+#else
+		throw new NotSupportedException();
+#endif
+
+	[SupportedOSPlatform("iOS26.0")]
+	static IEmbeddingGenerator<string, Embedding<float>> CreateAppleEmbeddingGenerator() =>
+#if IOS
+		new NLEmbeddingGenerator();
+#else
+		throw new NotSupportedException();
+#endif
 
 	static IEmbeddingGenerator<string, Embedding<float>> CreateAzureOpenAiEmbeddingGenerator()
 	{

@@ -64,6 +64,8 @@
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
     <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
     <UseInterpreter>true</UseInterpreter>
+    <CodesignProvision>AiChatClient</CodesignProvision>
+    <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
   </PropertyGroup>
 
     <ItemGroup>
@@ -76,6 +78,7 @@
         <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
         <PackageReference Include="Microsoft.Extensions.AI" />
         <PackageReference Include="Microsoft.Maui.Controls" />
+        <PackageReference Include="Microsoft.Maui.Essentials.AI" />
         <PackageReference Include="Microsoft.SemanticKernel.Connectors.InMemory" />
         <PackageReference Include="Microsoft.SemanticKernel.Connectors.SqliteVec" />
         <PackageReference Include="OllamaSharp" />
