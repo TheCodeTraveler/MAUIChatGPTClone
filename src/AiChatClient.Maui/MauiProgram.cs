@@ -57,13 +57,13 @@ static class MauiProgram
 		builder.Services.AddSingleton<IPreferences>(static _ => Preferences.Default);
 		builder.Services.AddSingleton<IDeviceDisplay>(static _ => DeviceDisplay.Current);
 
-		builder.Services.AddChatClient(static _ => (OperatingSystem.IsIOSVersionAtLeast(26) || OperatingSystem.IsMacCatalystVersionAtLeast(26)) 
-		                                           && DeviceInfo.Current.DeviceType == DeviceType.Physical
+		builder.Services.AddChatClient(static _ => (OperatingSystem.IsIOSVersionAtLeast(26) || OperatingSystem.IsMacCatalystVersionAtLeast(26))
+												   && DeviceInfo.Current.DeviceType == DeviceType.Physical
 														? CreateAppleIntelligenceChatClient()
 														: CreateOllamaChatClient());
-		
-		builder.Services.AddEmbeddingGenerator(static _ => (OperatingSystem.IsIOSVersionAtLeast(13) || OperatingSystem.IsMacCatalystVersionAtLeast(13,1))
-		                                                   && DeviceInfo.Current.DeviceType == DeviceType.Physical
+
+		builder.Services.AddEmbeddingGenerator(static _ => (OperatingSystem.IsIOSVersionAtLeast(13) || OperatingSystem.IsMacCatalystVersionAtLeast(13, 1))
+														   && DeviceInfo.Current.DeviceType == DeviceType.Physical
 																? CreateAppleEmbeddingGenerator()
 																: CreateOllamaEmbeddingGenerator());
 

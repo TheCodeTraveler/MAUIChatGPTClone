@@ -8,7 +8,7 @@ namespace AiChatClient.Common;
 
 public class PdfIngestionService(
 	IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
-	[FromKeyedServices("PdfVectorStore")]VectorStoreCollection<string, PdfChunkRecord> vectorCollection)
+	[FromKeyedServices("PdfVectorStore")] VectorStoreCollection<string, PdfChunkRecord> vectorCollection)
 {
 	const int _chunkSize = 1000;
 	const int _chunkOverlap = 200;

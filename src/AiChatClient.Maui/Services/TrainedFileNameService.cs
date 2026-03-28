@@ -18,7 +18,7 @@ public class TrainedFileNameService(IPreferences preferences)
 		get
 		{
 #if IOS || ANDROID || MACCATALYST
-			return [.._inMemoryFileNameList];
+			return [.. _inMemoryFileNameList];
 #else
 			var serializedTrainedFiles = _preferences.Get(_trainedFilesKey, "[]");
 			return JsonSerializer.Deserialize<ImmutableList<string>>(serializedTrainedFiles)
