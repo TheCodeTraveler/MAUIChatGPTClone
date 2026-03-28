@@ -70,6 +70,8 @@
   </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AWSSDK.Bedrock" />
+        <PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" />
         <PackageReference Include="Azure.AI.OpenAI" />
         <PackageReference Include="CommunityToolkit.Maui.Markup" />
         <PackageReference Include="CommunityToolkit.Maui" />

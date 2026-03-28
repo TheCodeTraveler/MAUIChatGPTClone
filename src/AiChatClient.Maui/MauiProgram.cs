@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Runtime.Versioning;
 using AiChatClient.Common;
 using AiChatClient.Common.Models;
+using Amazon;
+using Amazon.BedrockRuntime;
 using Azure.AI.OpenAI;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
@@ -91,6 +93,18 @@ static class MauiProgram
 			.AsIChatClient();
 
 		return new ChatClientBuilder(azureOpenAiClient)
+			.UseFunctionInvocation()
+			.Build();
+	}
+	
+	static IChatClient CreateAmazonBedrockChatClient()
+	{
+		const string modelId = "amazon.nova-lite-v1:0";
+
+		var client = new AmazonBedrockRuntimeClient(AwsCredentials.AccessKeyId, AwsCredentials.SecretAccessKey, RegionEndpoint.USEast1)
+				.AsIChatClient(modelId);
+
+		return new ChatClientBuilder(client)
 			.UseFunctionInvocation()
 			.Build();
 	}
