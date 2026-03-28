@@ -62,7 +62,7 @@ static class MauiProgram
 														? CreateAppleIntelligenceChatClient()
 														: CreateOllamaChatClient());
 		
-		builder.Services.AddEmbeddingGenerator(static _ => (OperatingSystem.IsIOSVersionAtLeast(26) || OperatingSystem.IsMacCatalystVersionAtLeast(26))
+		builder.Services.AddEmbeddingGenerator(static _ => (OperatingSystem.IsIOSVersionAtLeast(13) || OperatingSystem.IsMacCatalystVersionAtLeast(13,1))
 		                                                   && DeviceInfo.Current.DeviceType == DeviceType.Physical
 																? CreateAppleEmbeddingGenerator()
 																: CreateOllamaEmbeddingGenerator());
@@ -116,9 +116,9 @@ static class MauiProgram
 		throw new NotSupportedException("AppleIntelligenceChatClient is not supported on the current operating system");
 #endif
 
-	[SupportedOSPlatform("iOS26.0")]
-	[SupportedOSPlatform("macOS26.0")]
-	[SupportedOSPlatform("MacCatalyst26.0")]
+	[SupportedOSPlatform("iOS13.0")]
+	[SupportedOSPlatform("macOS10.15")]
+	[SupportedOSPlatform("MacCatalyst13.1")]
 	static IEmbeddingGenerator<string, Embedding<float>> CreateAppleEmbeddingGenerator() =>
 #if IOS || MACCATALYST
 		new NLEmbeddingGenerator();
