@@ -1,7 +1,7 @@
 name: Build
 
 env:
-    XcodeVersion: '26.2'
+    XcodeVersion: '26.3'
 
 on:
   push:
