@@ -20,7 +20,7 @@
     <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.NLP" Version="10.4.0-preview.1.26160.2" />
     <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.Quality" Version="10.4.0" />
     <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.Safety" Version="10.4.0-preview.1.26160.2" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.4.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.5.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.5" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.VectorData.Abstractions" Version="10.1.0" />
